@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#0b0820">
+<title>實像傳媒 AR 名片</title>
+<link rel="stylesheet" href="style.css">
+<script type="importmap">
+{ "imports": {
+    "three": "./vendor/three/three.module.js",
+    "three/addons/": "./vendor/three/addons/"
+} }
+</script>
+</head>
+<body>
+  <!-- 開始畫面 -->
+  <div id="start" class="screen">
+    <div class="brand">
+      <div class="logo">實像傳媒</div>
+      <div class="sub">SHIXIANG MEDIA ・ AR CARD</div>
+    </div>
+    <p class="lead">把手機鏡頭對準名片正面，<br>角色就會從名片上浮出來。</p>
+    <button id="btnCamera" class="primary">開啟相機，掃描名片</button>
+    <a id="btnPreview" class="ghost" href="?preview">沒有名片？先看預覽</a>
+    <p class="note">需要允許使用相機。建議用 iPhone 的 Safari 或 Android 的 Chrome 打開。</p>
+  </div>
+
+  <!-- AR 畫面 -->
+  <div id="ar"></div>
+
+  <!-- 上方：切換角色的圓形按鈕 -->
+  <div id="bar" class="hidden"></div>
+
+  <!-- 掃描提示（還沒對到名片時） -->
+  <div id="scan" class="hidden">
+    <div class="frame"><span></span><span></span><span></span><span></span><i class="line"></i></div>
+    <p>把鏡頭對準名片正面</p>
+  </div>
+
+  <div id="preview-tip" class="hidden">預覽模式：拖曳可以轉動視角</div>
+
+  <script type="module" src="app.js"></script>
+</body>
+</html>
