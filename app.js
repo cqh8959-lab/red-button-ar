@@ -56,7 +56,7 @@ function infoTexture(ch) {
 // ---------------- 全息角色的材質 ----------------
 function hologramMaterial(map) {
   return new THREE.ShaderMaterial({
-    transparent: true, depthWrite: false, side: THREE.DoubleSide,
+    transparent: true, depthWrite: false, depthTest: false, side: THREE.DoubleSide,   // 永遠畫在最上面，不會被名片擋住
     uniforms: {
       map: { value: map }, time: { value: 0 }, reveal: { value: 0 }, opacity: { value: 1 },
       tint: { value: TINT }, texel: { value: new THREE.Vector2(1 / 512, 1 / 1400) }, glitch: { value: 0 },
@@ -140,7 +140,7 @@ function buildHologram() {
   root.add(scanRing);
 
   // 角色（每個角色一片，站在名片上：先轉 90° 讓角色的「上」＝名片外面）
-  const stand = new THREE.Group(); stand.rotation.x = Math.PI / 2; pivot.add(stand);
+  const stand = new THREE.Group(); stand.rotation.x = Math.PI / 2; pivot.add(stand);   // 方向每一格由 orient() 決定
   const chars = CHARACTERS.map(ch => {
     const tex = loader.load(ch.image, t => {
       t.colorSpace = THREE.SRGBColorSpace;
@@ -152,16 +152,18 @@ function buildHologram() {
     const mesh = new THREE.Mesh(new THREE.PlaneGeometry(1, 1), mat);
     mesh.geometry.translate(0, 0.5, 0);          // 腳底在原點
     mesh.visible = false;
+    mesh.renderOrder = 10;
     stand.add(mesh);
     // 資料卡：浮在角色右邊
     const info = new THREE.Mesh(new THREE.PlaneGeometry(0.4, 0.25),
-      new THREE.MeshBasicMaterial({ map: infoTexture(ch), transparent: true, depthWrite: false, opacity: 0, side: THREE.DoubleSide }));
+      new THREE.MeshBasicMaterial({ map: infoTexture(ch), transparent: true, depthWrite: false, depthTest: false, opacity: 0, side: THREE.DoubleSide }));
+    info.renderOrder = 11;
     info.position.set(0.36, 0.86, 0.04); info.rotation.y = -0.3;   // 靠近角色，手機直拿也看得到 info.visible = false;
     stand.add(info);
     return { mesh, mat, info };
   });
 
-  return { root, pivot, disc, ring1, ring2, beam, points, pMat, speed, scanRing, chars };
+  return { root, pivot, stand, disc, ring1, ring2, beam, points, pMat, speed, scanRing, chars };
 }
 
 // ---------------- 動畫狀態：出場、切換 ----------------
@@ -182,7 +184,7 @@ function switchTo(index) {
 }
 function showOnly(i) { holo.chars.forEach((c, k) => { c.mesh.visible = k === i; c.info.visible = k === i; }); }
 
-function update(t, dt, cameraInCard) {
+function update(t, dt, cameraInCard, cameraUpInCard) {
   const c = holo.chars[current];
   const p = t - phaseStart;
   let reveal = c.mat.uniforms.reveal.value;
@@ -233,13 +235,41 @@ function update(t, dt, cameraInCard) {
   holo.scanRing.position.z = reveal * CHAR_HEIGHT + holo.pivot.position.z;
   holo.scanRing.material.opacity = scanning ? 0.9 : 0;
 
-  // 角色一直轉向鏡頭（只繞名片的法線轉，看起來像站在名片上）
-  if (cameraInCard) {
-    const target = Math.atan2(cameraInCard.x, -cameraInCard.y);
-    let d = target - holo.pivot.rotation.z;
-    d = Math.atan2(Math.sin(d), Math.cos(d));
-    holo.pivot.rotation.z += d * Math.min(1, dt * 4);
-  }
+  if (cameraInCard && cameraUpInCard) orient(cameraInCard, cameraUpInCard, dt);
+}
+
+// 角色永遠「面向鏡頭」、而且在手機畫面上是正的：
+//   斜斜地看（名片平放在桌上）→ 角色站在名片上
+//   從正上方看（名片在螢幕上、或正對著拍）→ 角色轉成面向你、照手機畫面的上方站正
+//   中間的角度平順過渡，不會出現「只看到側面、人不見了」
+const _d = new THREE.Vector3(), _up = new THREE.Vector3(), _right = new THREE.Vector3();
+const _m = new THREE.Matrix4(), _q = new THREE.Quaternion(), _center = new THREE.Vector3(0, 0, CHAR_HEIGHT * 0.45);
+function orient(cameraInCard, cameraUpInCard, dt) {
+  _d.copy(cameraInCard).sub(_center).normalize();                         // 從角色看向鏡頭的方向
+  const top = THREE.MathUtils.smoothstep(Math.abs(_d.z), 0.45, 0.9);       // 越接近正上方看，越照「畫面的上方」站
+  _up.set(0, 0, 1).multiplyScalar(1 - top).addScaledVector(cameraUpInCard, top).normalize();
+  _right.crossVectors(_up, _d);
+  if (_right.lengthSq() < 1e-6) return;
+  _right.normalize();
+  _up.crossVectors(_d, _right).normalize();
+  _m.makeBasis(_right, _up, _d);                                           // 圖片的正面朝向鏡頭
+  _q.setFromRotationMatrix(_m);
+  holo.stand.quaternion.slerp(_q, Math.min(1, dt * 6));                    // 慢慢轉過去（緩動），不會一下子跳
+  // 從正上方看時：角色往下移、置中在名片上（不會超出畫面碰到按鈕），也稍微縮小一點
+  topAmount += (top - topAmount) * Math.min(1, dt * 6);
+  const standUp = new THREE.Vector3(0, 1, 0).applyQuaternion(holo.stand.quaternion);
+  holo.stand.position.copy(standUp).multiplyScalar(-CHAR_HEIGHT * 0.5 * topAmount).addScaledVector(_d, 0.3 * topAmount);   // 也往鏡頭方向浮起來一點
+  holo.stand.scale.setScalar(1 - 0.18 * topAmount);
+}
+let topAmount = 0;
+
+// 鏡頭在名片座標裡的位置、和「手機畫面的上方」在名片座標裡的方向
+function cameraInfo(camera) {
+  const pos = camera.getWorldPosition(new THREE.Vector3());
+  const upWorld = new THREE.Vector3(0, 1, 0).applyQuaternion(camera.getWorldQuaternion(new THREE.Quaternion()));
+  const local = holo.root.worldToLocal(pos.clone());
+  const upLocal = holo.root.worldToLocal(pos.clone().add(upWorld)).sub(local).normalize();
+  return [local, upLocal];
 }
 
 // ---------------- 上方的按鈕 ----------------
@@ -281,6 +311,7 @@ async function startPreview() {
   const camera = new THREE.PerspectiveCamera(50, innerWidth / innerHeight, 0.01, 50);
   camera.up.set(0, 0, 1);
   camera.position.set(0.2, -2.25, 1.45);
+  if (params.has('top')) camera.position.set(0.05, -0.05, 2.6);       // 測試：從正上方看（像掃電腦螢幕上的名片）
   const controls = new OrbitControls(camera, renderer.domElement);
   controls.target.set(0, 0, 0.45); controls.enableDamping = true; controls.update();
 
@@ -299,8 +330,8 @@ async function startPreview() {
   renderer.setAnimationLoop(() => {
     const t = now(), dt = Math.min(0.05, t - last); last = t;
     controls.update();
-    const camLocal = holo.root.worldToLocal(camera.position.clone());
-    update(t, dt, camLocal);
+    const [camLocal, camUp] = cameraInfo(camera);
+    update(t, dt, camLocal, camUp);
     renderer.render(scene, camera);
   });
 }
@@ -338,8 +369,8 @@ async function startAR() {
     let last = now();
     renderer.setAnimationLoop(() => {
       const t = now(), dt = Math.min(0.05, t - last); last = t;
-      const camLocal = holo.root.worldToLocal(camera.getWorldPosition(new THREE.Vector3()));
-      update(t, dt, camLocal);
+      const [camLocal, camUp] = cameraInfo(camera);
+      update(t, dt, camLocal, camUp);
       renderer.render(scene, camera);
     });
   } catch (e) {
