@@ -12,32 +12,53 @@
 </head>
 <body>
 
-<header class="nav">
-  <a class="brand" href="#top">主編的紅色按鈕</a>
-  <nav>
-    <a href="#story">故事</a>
-    <a href="#chapters">三個晚上</a>
-    <a href="#people">角色</a>
-    <a href="#play">特色</a>
-    <a href="#ar">AR 名片</a>
-  </nav>
-</header>
-
 <main id="top">
 
-  <!-- 1. 開場主視覺 -->
-  <section class="hero">
-    <div class="hero-bg" style="background-image:url('img/office.jpg')"></div>
-    <div class="hero-shade"></div>
-    <div class="hero-inner">
-      <p class="eyebrow reveal">一款關於媒體倫理的劇情遊戲</p>
-      <h1 class="reveal">主編的<span class="red">紅色按鈕</span></h1>
-      <p class="tagline reveal">按下去，就是流量。</p>
-      <a class="big-button reveal" href="#story" aria-label="開始">
-        <span class="cap"></span>
-        <span class="label">開始</span>
-      </a>
+  <!-- 1. 開場：角色站在「流量」裡。拿起來、搖一搖、再放回去 -->
+  <section class="stage" id="stage" data-theme="0">
+    <header class="stage-nav">
+      <a class="logo" href="#top">主編的紅色按鈕<i></i></a>
+      <nav>
+        <a href="#story">故事</a>
+        <a href="#chapters">三個晚上</a>
+        <a href="#people">角色</a>
+        <a href="#ar">AR 名片</a>
+      </nav>
+    </header>
+
+    <div class="word" aria-hidden="true"><span id="bigWord">流量</span></div>
+
+    <div class="side left">
+      <h1 id="title">按下去</h1>
+      <div class="label">
+        <div class="row head"><span>編輯檔案</span><span>第 <b id="night">1</b> 夜</span></div>
+        <div class="bar"></div>
+        <div class="row"><span id="k1">職位</span><b id="v1">新進編輯</b></div>
+        <div class="row"><span id="k2">良心</span><b id="v2">100%</b></div>
+      </div>
+      <p class="stamp" id="stamp">RI-041　BB 2026.11.22　23:10</p>
     </div>
+
+    <div class="side right">
+      <p class="tiny" id="bigLabel">流量加成</p>
+      <p class="big" id="bigNum">+1100%</p>
+      <div class="fizz"><span>流量</span><span>爆</span></div>
+      <div class="fizz-bar"><i id="fizzFill"></i></div>
+    </div>
+
+    <img class="hero-char" id="heroChar" src="img/char1.png" alt="你，實像傳媒新進編輯" draggable="false">
+    <canvas id="liquid" aria-hidden="true"></canvas>
+
+    <div class="bottom">
+      <p class="copy" id="copy">剛到實像傳媒報到的新人。桌上那顆紅色按鈕，按下去就是流量。</p>
+      <p class="hint">拿起角色・搖一搖・再放回去</p>
+    </div>
+    <div class="picker" role="tablist" aria-label="選角色">
+      <button class="pick on" data-i="0" role="tab" aria-selected="true"><img src="img/char1.png" alt=""><span>你</span></button>
+      <button class="pick" data-i="1" role="tab" aria-selected="false"><img src="img/char2.png" alt=""><span>主編</span></button>
+      <button class="pick" data-i="2" role="tab" aria-selected="false"><img src="img/char3.png" alt=""><span>老闆</span></button>
+    </div>
+    <a class="cta" href="../">打開 AR 名片</a>
   </section>
 
   <!-- 2. 故事 -->
@@ -92,16 +113,16 @@
           <p>剛到實像傳媒報到的新人。想做好新聞，也想被看見。</p>
         </article>
         <article class="person reveal">
-          <div class="portrait placeholder"><span>宋</span></div>
-          <h3>宋羽晴</h3>
-          <p class="role">女演員</p>
-          <p>新聞裡的主角。她的貼文，說的是照片外面的事。</p>
+          <div class="portrait"><img src="img/char2.png" alt="李蔓緹，實像傳媒主編"></div>
+          <h3>李蔓緹</h3>
+          <p class="role">實像傳媒・主編</p>
+          <p>你的上司。她只在乎一個數字：點閱。</p>
         </article>
         <article class="person reveal">
-          <div class="portrait"><img src="img/char3.png" alt="李蔓緹，實像傳媒總編輯"></div>
-          <h3>李蔓緹</h3>
-          <p class="role">實像傳媒・總編輯</p>
-          <p>你的上司。她只在乎一個數字：點閱。</p>
+          <div class="portrait"><img src="img/char3.png" alt="實像傳媒的老闆"></div>
+          <h3>老闆</h3>
+          <p class="role">實像傳媒・老闆</p>
+          <p>他看的不是新聞，是報表上的數字。</p>
         </article>
       </div>
     </div>
@@ -167,5 +188,6 @@
 </footer>
 
 <script src="site.js"></script>
+<script src="stage.js"></script>
 </body>
 </html>

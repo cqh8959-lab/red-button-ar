@@ -7,8 +7,8 @@ import * as THREE from 'three';
 // ---------------- 角色資料（換角色：改這裡、把圖放進 assets/） ----------------
 const CHARACTERS = [
   { id: 'char1', name: '你', role: '實像傳媒・新進編輯', text: '剛到實像傳媒報到的新人。\n桌上那顆紅色按鈕，按下去就是流量。', image: 'assets/char1.png' },
-  { id: 'char2', name: '你（深夜）', role: '加班到凌晨', text: '螢幕的光照在臉上。\n下一則標題，要更狠一點。', image: 'assets/char2.png' },
-  { id: 'char3', name: '李蔓緹', role: '實像傳媒・總編輯', text: '你的上司。\n她只在乎一個數字：點閱。', image: 'assets/char3.png' },
+  { id: 'char2', name: '李蔓緹', role: '實像傳媒・主編', text: '你的上司。\n她只在乎一個數字：點閱。', image: 'assets/char2.png' },
+  { id: 'char3', name: '老闆', role: '實像傳媒・老闆', text: '他看的不是新聞，\n是報表上的數字。', image: 'assets/char3.png' },
 ];
 
 const CARD_ASPECT = 591 / 1063;          // 名片（辨識圖）的高 ÷ 寬
