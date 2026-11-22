@@ -217,3 +217,21 @@ footer { text-align: center; padding: 32px 16px; color: var(--muted); font-size:
   .pick img { height: 56px; }
   .cta { display: none; }
 }
+
+/* ================= 濾鏡明信片 ================= */
+.lens-intro { color: var(--muted); }
+.lens-stage { position: relative; aspect-ratio: 16 / 9; border-radius: 14px; overflow: hidden; box-shadow: 0 20px 40px rgba(0,0,0,.45); touch-action: none; cursor: grab; user-select: none; -webkit-user-select: none; }
+.lens-stage:active { cursor: grabbing; }
+.lens-stage img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; pointer-events: none; }
+.lens-view { clip-path: circle(var(--r, 18%) at var(--x, 50%) var(--y, 50%)); transition: opacity .45s var(--ease); }
+#lensBlue { opacity: 0; }
+.lens-ring { position: absolute; left: var(--x, 50%); top: var(--y, 50%); width: calc(var(--rpx, 140px) * 2); height: calc(var(--rpx, 140px) * 2); transform: translate(-50%, -50%); border-radius: 50%; border: 6px solid #d92b33; box-shadow: 0 8px 20px rgba(0,0,0,.4), inset 0 0 0 2px rgba(255,255,255,.35); pointer-events: none; transition: border-color .45s var(--ease); }
+.lens-ring.blue { border-color: #2f5bd8; }
+.lens-pick { display: flex; gap: 12px; justify-content: center; margin-top: 18px; flex-wrap: wrap; }
+.lp { font: inherit; font-weight: 700; border: 2px solid rgba(255,255,255,.25); background: transparent; color: var(--ink); padding: 10px 22px; border-radius: 99px; cursor: pointer; display: flex; align-items: center; gap: 8px; transition: background-color .3s var(--ease), border-color .3s var(--ease); }
+.lp:hover { animation: wiggle .6s var(--ease); }
+.lp.on { background: rgba(255,255,255,.12); border-color: rgba(255,255,255,.7); }
+.lp .dot { width: 14px; height: 14px; border-radius: 50%; display: inline-block; }
+.lp .dot.r { background: #d92b33; }
+.lp .dot.b { background: #2f5bd8; }
+.lens-caption { text-align: center; margin-top: 14px; min-height: 1.8em; transition: opacity .3s var(--ease); }

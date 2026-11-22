@@ -152,6 +152,25 @@
     </div>
   </section>
 
+  <!-- 濾鏡明信片：拖著鏡片看，紅色只看得到人，藍色看得到全部 -->
+  <section id="lens" class="band">
+    <div class="wrap">
+      <h2 class="reveal">濾鏡明信片</h2>
+      <p class="reveal lens-intro">直接看，只是一團亂。戴上鏡片，才看得到被藏起來的畫面。<br>拖著鏡片在明信片上移動，換換看紅色和藍色。</p>
+      <div class="lens-stage reveal" id="lensStage">
+        <img class="lens-base" src="img/postcard.jpg" alt="濾鏡明信片：肉眼看是交疊的洋紅色圖案" draggable="false">
+        <img class="lens-view" id="lensRed" src="img/postcard_red.jpg" alt="" draggable="false">
+        <img class="lens-view" id="lensBlue" src="img/postcard_blue.jpg" alt="" draggable="false">
+        <div class="lens-ring" id="lensRing" aria-hidden="true"></div>
+      </div>
+      <div class="lens-pick reveal" role="tablist" aria-label="選鏡片">
+        <button class="lp on" data-lens="red" role="tab" aria-selected="true"><i class="dot r"></i>紅色鏡片</button>
+        <button class="lp" data-lens="blue" role="tab" aria-selected="false"><i class="dot b"></i>藍色鏡片</button>
+      </div>
+      <p class="lens-caption" id="lensCaption">紅色鏡片：只看得到人。少了前後，看起來就像另一件事。</p>
+    </div>
+  </section>
+
   <!-- 6. AR 名片 -->
   <section id="ar" class="band">
     <div class="wrap two">
@@ -189,5 +208,6 @@
 
 <script src="site.js"></script>
 <script src="stage.js"></script>
+<script src="lens.js"></script>
 </body>
 </html>
