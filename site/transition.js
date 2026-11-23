@@ -75,7 +75,7 @@
       if (!target) return;
       e.preventDefault();
       window.flowTransition(function () {
-        var y = id === '#top' ? 0 : target.getBoundingClientRect().top + window.scrollY;
+        var y = id === '#top' ? 0 : target.getBoundingClientRect().top + window.scrollY - 60;   // 留位置給釘在上面的選單
         window.scrollTo({ top: y, behavior: 'instant' });
         if (history.replaceState) history.replaceState(null, '', id);
       });

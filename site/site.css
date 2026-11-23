@@ -32,7 +32,7 @@ button { font: inherit; color: inherit; }
   background: radial-gradient(ellipse 60% 50% at 50% 38%, #2a2546 0%, var(--night) 70%);
   user-select: none; -webkit-user-select: none;
 }
-.topbar { position: absolute; inset: 0 0 auto 0; z-index: 8; display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 14px 28px; }
+.topbar { position: fixed; inset: 0 0 auto 0; z-index: 90; transition: background-color .4s var(--ease), box-shadow .4s var(--ease); display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 14px 28px; }
 .logo { display: flex; align-items: center; gap: 10px; font-weight: 900; font-size: 20px; text-decoration: none; white-space: nowrap; }
 .logo-dot { width: 14px; height: 14px; border-radius: 50%; background: var(--red); box-shadow: 0 3px 0 var(--red-dark); }
 .topbar nav { display: flex; gap: 20px; flex-wrap: wrap; justify-content: flex-end; }
@@ -228,3 +228,7 @@ footer { text-align: center; padding: 32px 16px; color: var(--muted); font-size:
 /* 往下捲：每一區從下往上被揭開 */
 .band.unveil { clip-path: inset(18% 0 0 0 round 40px 40px 0 0); transition: clip-path 1s var(--ease); }
 .band.unveil.unveiled { clip-path: inset(0 0 0 0 round 0 0 0 0); }
+
+/* 上方選單一直釘在最上面；往下捲之後加深色底，字才看得清楚 */
+.topbar.scrolled { background: rgba(18, 16, 31, .92); box-shadow: 0 6px 18px rgba(0,0,0,.35); backdrop-filter: blur(8px); }
+[id] { scroll-margin-top: 64px; }

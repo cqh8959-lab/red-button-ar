@@ -2,6 +2,12 @@
 (function () {
   function ease(t) { return 1 - Math.pow(1 - t, 3); }
 
+  // ---------- 上方選單：往下捲之後加深色底 ----------
+  var topbar = document.querySelector('.topbar');
+  function onScroll() { if (topbar) topbar.classList.toggle('scrolled', window.scrollY > 40); }
+  window.addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+
   // ---------- 捲動到才出現 ----------
   var items = document.querySelectorAll('.reveal');
   if ('IntersectionObserver' in window) {
