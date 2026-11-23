@@ -130,7 +130,7 @@ p { margin: 0 0 14px; }
 .person { position: relative; border: 0; background: var(--night2); border-radius: 16px; padding: 16px 16px 104px; cursor: pointer; display: grid; justify-items: center; gap: 2px; transform-style: preserve-3d; transition: transform .4s var(--ease); box-shadow: 0 14px 26px rgba(0,0,0,.35); }
 .person .portrait { height: 340px; width: 100%; display: grid; place-items: end center; background: radial-gradient(ellipse at 50% 90%, rgba(217,43,51,.28), transparent 65%); border-radius: 12px; overflow: hidden; }
 .person img { height: 100%; width: auto; object-fit: contain; transition: transform .6s var(--ease); pointer-events: none; }
-.person:hover img { transform: translateY(-8px); }
+.person:hover img.full { transform: translateY(-8px); }
 .person b { font-size: 22px; position: absolute; left: 0; right: 0; bottom: 46px; }
 .person small { position: absolute; left: 0; right: 0; bottom: 22px; }
 .person small { color: var(--muted); }
@@ -271,3 +271,11 @@ footer { text-align: center; padding: 32px 16px; color: var(--muted); font-size:
 .topbar { top: 34px; }
 .topbar.scrolled { top: 0; }
 @media (max-width: 860px) { .topbar { top: 30px; } .topbar.scrolled { top: 0; } }
+
+/* 點角色：全身立繪縮小淡出 → Q 版彈出來（再點一次變回去） */
+.person .portrait { position: relative; }
+.person .portrait img.full { transition: transform .5s var(--ease), opacity .4s var(--ease); }
+.person .portrait img.chibi { position: absolute; left: 50%; bottom: 6%; height: 82%; width: auto; transform: translateX(-50%) scale(.4); opacity: 0; transition: transform .55s var(--ease-back), opacity .35s var(--ease); pointer-events: none; filter: drop-shadow(0 10px 14px rgba(0,0,0,.45)); }
+.person.chibi-on .portrait img.full { opacity: 0; transform: scale(.85) translateY(12px); }
+.person.chibi-on .portrait img.chibi { opacity: 1; transform: translateX(-50%) scale(1); animation: chibiSway 2.6s ease-in-out .6s infinite; }
+@keyframes chibiSway { 0%,100% { rotate: 0deg; } 50% { rotate: 2deg; } }

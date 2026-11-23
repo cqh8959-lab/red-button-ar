@@ -51,6 +51,8 @@
     });
     card.addEventListener('pointerleave', function () { tx = ty = 0; go(); });
     card.addEventListener('click', function () {
+      var on = card.classList.toggle('chibi-on');          // 變成 Q 版／變回來
+      if (!on) { card.classList.remove('talk'); return; }
       var bubble = card.querySelector('.bubble'), text = card.dataset.say, i = 0;
       if (typing) clearInterval(typing);
       bubble.textContent = '';
