@@ -32,14 +32,14 @@ button { font: inherit; color: inherit; }
   background: radial-gradient(ellipse 60% 50% at 50% 38%, #2a2546 0%, var(--night) 70%);
   user-select: none; -webkit-user-select: none;
 }
-.topbar { position: fixed; inset: 0 0 auto 0; z-index: 90; transition: background-color .4s var(--ease), box-shadow .4s var(--ease); display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 14px 28px; }
+.topbar { position: fixed; inset: 0 0 auto 0; z-index: 90; transition: background-color .4s var(--ease), box-shadow .4s var(--ease), top .35s var(--ease); display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 14px 28px; }
 .logo { display: flex; align-items: center; gap: 10px; font-weight: 900; font-size: 20px; text-decoration: none; white-space: nowrap; }
 .logo-dot { width: 14px; height: 14px; border-radius: 50%; background: var(--red); box-shadow: 0 3px 0 var(--red-dark); }
 .topbar nav { display: flex; gap: 20px; flex-wrap: wrap; justify-content: flex-end; }
 .topbar nav a { text-decoration: none; color: var(--muted); font-size: 15px; font-weight: 700; transition: color .3s var(--ease); }
 .topbar nav a:hover { color: var(--ink); }
 
-.ticker { position: absolute; left: 0; right: 0; top: 76px; height: 34px; z-index: 7; background: var(--red); overflow: hidden; display: flex; align-items: center; transition: background-color .6s var(--ease); }
+.ticker { position: absolute; left: 0; right: 0; top: 0; height: 34px; z-index: 7; background: var(--red); overflow: hidden; display: flex; align-items: center; transition: background-color .6s var(--ease); }
 .ticker.alarm { background: #5a0b10; }
 .ticker-track { display: flex; gap: 48px; white-space: nowrap; font-weight: 700; font-size: 14px; animation: tick 40s linear infinite; padding-left: 100%; }
 .ticker-track span::before { content: "快訊"; background: #fff; color: var(--red); border-radius: 4px; padding: 0 6px; margin-right: 10px; font-size: 12px; }
@@ -206,7 +206,7 @@ footer { text-align: center; padding: 32px 16px; color: var(--muted); font-size:
 @media (max-width: 860px) {
   .topbar { padding: 12px 16px; }
   .topbar nav { display: none; }
-  .ticker { top: 62px; height: 30px; }
+  .ticker { top: 0; height: 30px; }
   .notes { top: 108px; }
   .stage { min-height: 680px; }
   .notes { left: 16px; top: 88px; grid-auto-flow: column; gap: 4px; }
@@ -266,3 +266,8 @@ footer { text-align: center; padding: 32px 16px; color: var(--muted); font-size:
 .tool-tip { margin-top: 20px; color: var(--muted); text-align: center; }
 @media (max-width: 860px) { .tools { grid-template-columns: 1fr; } }
 .q-more { margin: 14px 0 0; font-size: 14px; } .q-more a { color: var(--red); font-weight: 700; }
+
+/* 快訊在最上面，標準字＋選單在快訊下面；往下捲之後選單貼到最上面 */
+.topbar { top: 34px; }
+.topbar.scrolled { top: 0; }
+@media (max-width: 860px) { .topbar { top: 30px; } .topbar.scrolled { top: 0; } }

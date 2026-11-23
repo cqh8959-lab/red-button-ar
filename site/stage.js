@@ -13,9 +13,9 @@
   var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   var CHARS = [
-    { img: 'img/char1.png', alt: '你，實像傳媒新進編輯', liquid: '#c8242d' },
-    { img: 'img/char2.png', alt: '李蔓緹，實像傳媒主編', liquid: '#7b3fb3' },
-    { img: 'img/char3.png', alt: '實像傳媒的老闆', liquid: '#2b5fa8' },
+    { img: 'img/char1.png', alt: '你，實像媒體新進編輯', liquid: '#c8242d' },
+    { img: 'img/char2.png', alt: '李蔓緹，實像媒體主編', liquid: '#7b3fb3' },
+    { img: 'img/char3.png', alt: '實像媒體的老闆', liquid: '#2b5fa8' },
   ];
   var HEADLINES = [
     '女星宋羽晴深夜現身',
@@ -26,7 +26,7 @@
     '她還有臉出現嗎？',
   ];
   var CHIPS = ['+1', '已分享', '太扯了吧', '求後續', '退圈啦', '真的假的', '#失控女星', '早就知道'];
-  var TICKER = ['實像傳媒衝上發燒榜第二名', '女星深夜現身 畫面曝光', '網友熱議：她到底怎麼了', '點閱破千萬 留言湧入', '更多後續 持續更新中'];
+  var TICKER = ['實像媒體衝上發燒榜第二名', '女星深夜現身 畫面曝光', '網友熱議：她到底怎麼了', '點閱破千萬 留言湧入', '更多後續 持續更新中'];
 
   // 快訊跑馬燈
   var track = document.getElementById('tickerTrack');

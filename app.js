@@ -1,4 +1,4 @@
-// 實像傳媒 AR 名片
+// 實像媒體 AR 名片
 //   手機掃名片正面 → 角色從名片上浮出來（全息投影）
 //   上方一排圓形按鈕：START（重播出場）＋ 每個角色一顆，點了就切換
 //   ?preview：不用相機，直接在畫面上看效果（電腦也能看）
@@ -6,9 +6,9 @@ import * as THREE from 'three';
 
 // ---------------- 角色資料（換角色：改這裡、把圖放進 assets/） ----------------
 const CHARACTERS = [
-  { id: 'char1', name: '你', role: '實像傳媒・新進編輯', text: '剛到實像傳媒報到的新人。\n桌上那顆紅色按鈕，按下去就是流量。', image: 'assets/char1.png' },
-  { id: 'char2', name: '李蔓緹', role: '實像傳媒・主編', text: '你的上司。\n她只在乎一個數字：點閱。', image: 'assets/char2.png' },
-  { id: 'char3', name: '老闆', role: '實像傳媒・老闆', text: '他看的不是新聞，\n是報表上的數字。', image: 'assets/char3.png' },
+  { id: 'char1', name: '你', role: '實像媒體・新進編輯', text: '剛到實像媒體報到的新人。\n桌上那顆紅色按鈕，按下去就是流量。', image: 'assets/char1.png' },
+  { id: 'char2', name: '李蔓緹', role: '實像媒體・主編', text: '你的上司。\n她只在乎一個數字：點閱。', image: 'assets/char2.png' },
+  { id: 'char3', name: '老闆', role: '實像媒體・老闆', text: '他看的不是新聞，\n是報表上的數字。', image: 'assets/char3.png' },
 ];
 
 const CARD_ASPECT = 591 / 1063;          // 名片（辨識圖）的高 ÷ 寬
