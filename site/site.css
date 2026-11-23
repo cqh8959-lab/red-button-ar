@@ -67,10 +67,10 @@ button { font: inherit; color: inherit; }
 .console-head { display: flex; justify-content: space-between; font-size: 12px; font-weight: 700; margin: 0 0 6px; opacity: .75; }
 .console-headline { font-weight: 900; font-size: 18px; line-height: 1.45; min-height: 3em; margin: 0 0 12px; text-align: left; transition: opacity .25s var(--ease), transform .25s var(--ease); }
 .console-headline.swap { opacity: 0; transform: translateY(6px); }
-.red-btn { position: relative; width: 120px; height: 120px; border: 0; padding: 0; background: none; cursor: pointer; display: block; margin: 0 auto; }
-.red-btn .cap { position: absolute; inset: 0; border-radius: 50%; background: radial-gradient(circle at 35% 30%, #f0545b, var(--red) 55%, var(--red-dark)); box-shadow: 0 10px 0 #6a1015, 0 16px 24px rgba(0,0,0,.35); transition: transform .15s var(--ease), box-shadow .15s var(--ease); }
+.red-btn { position: relative; width: 130px; height: 140px; border: 0; padding: 0; background: none; cursor: pointer; display: block; margin: 0 auto; }
+.red-btn .cap { position: absolute; inset: 0; background: url("img/red_button.png") center / contain no-repeat; transform-origin: 50% 85%; transition: transform .15s var(--ease); }
 .red-btn:hover .cap { animation: wiggle .6s var(--ease); }
-.red-btn:active .cap, .red-btn.pressed .cap { transform: translateY(8px); box-shadow: 0 2px 0 #6a1015, 0 6px 10px rgba(0,0,0,.35); }
+.red-btn:active .cap, .red-btn.pressed .cap { transform: translateY(6px) scale(.94, .88); }
 .red-btn:disabled { cursor: not-allowed; opacity: .45; }
 .console-label { font-weight: 900; letter-spacing: .3em; margin: 12px 0 0; }
 
@@ -214,7 +214,7 @@ footer { text-align: center; padding: 32px 16px; color: var(--muted); font-size:
   .hero-char { height: 46vh; bottom: 15vh; }
   .console { top: auto; bottom: 16px; right: 16px; width: 150px; padding: 10px; rotate: 0deg; }
   .console-headline { display: none; }
-  .red-btn { width: 86px; height: 86px; }
+  .red-btn { width: 90px; height: 97px; }
   .console-label { margin-top: 8px; font-size: 13px; }
   .hint { left: 16px; right: 180px; bottom: 20px; font-size: 12px; }
   .band { padding: 64px 16px; }
