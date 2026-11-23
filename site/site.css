@@ -232,3 +232,11 @@ footer { text-align: center; padding: 32px 16px; color: var(--muted); font-size:
 /* 上方選單一直釘在最上面；往下捲之後加深色底，字才看得清楚 */
 .topbar.scrolled { background: rgba(18, 16, 31, .92); box-shadow: 0 6px 18px rgba(0,0,0,.35); backdrop-filter: blur(8px); }
 [id] { scroll-margin-top: 64px; }
+
+/* 問答結果：你是哪一個角色（Q 版彈出來，之後輕輕晃） */
+.q-ask { color: #7a6a55; font-weight: 700; margin: 0 0 4px; }
+.q-chibi { height: 240px; width: auto; margin: 6px auto 4px; filter: drop-shadow(0 10px 14px rgba(0,0,0,.25)); }
+.q-chibi.pop { animation: chibiPop .6s var(--ease-back), chibiBob 2.6s ease-in-out .6s infinite; }
+@keyframes chibiPop { from { transform: scale(.3) translateY(40px); opacity: 0; } to { transform: none; opacity: 1; } }
+@keyframes chibiBob { 0%,100% { transform: translateY(0) rotate(0deg); } 50% { transform: translateY(-6px) rotate(1.5deg); } }
+@media (max-width: 860px) { .q-chibi { height: 180px; } }

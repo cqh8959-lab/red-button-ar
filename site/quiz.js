@@ -28,11 +28,12 @@
       o: ['跟著罵，大家都這樣說', '先想想：我知道的是不是全部？', '截圖分享，讓更多人知道'], a: 1,
       e: '螢幕的另一邊，是一個真實的人。在不知道全部之前，先停一下，不要讓自己變成浪的一部分。' },
   ];
+  // 答對幾題 → 你的個性最像哪一個角色（Q 版）
   var TYPES = [
-    { min: 8, name: '查證高手', advice: '你會先停一下、找來源、看前後文。網路上需要更多像你這樣的讀者。' },
-    { min: 6, name: '冷靜的讀者', advice: '大部分時候你都看得很清楚。下次遇到很聳動的標題，再多查一步就更好了。' },
-    { min: 4, name: '容易被帶著走的讀者', advice: '標題和情緒字有時候會影響你。試試看：分享之前，先找完整的版本。' },
-    { min: 0, name: '流量的好朋友', advice: '主編最喜歡你這樣的讀者了。但螢幕的另一邊，是一個真實的人。再玩一次，換個角度看看。' },
+    { min: 7, name: '宋羽晴', img: 'img/chibi_song.png', advice: '你看得見螢幕另一邊的人。在知道全部之前，你不會急著下結論。' },
+    { min: 5, name: '劉煦睿', img: 'img/chibi_player.png', advice: '你一直在找真相，只是偶爾還是會被流量推著走。分享之前，再多查一步就好。' },
+    { min: 3, name: '李蔓緹', img: 'img/chibi_editor.png', advice: '標題夠狠、數字夠高，你就會停下來看。試試看：先找完整的版本，再決定要不要相信。' },
+    { min: 0, name: '沈崇德', img: 'img/chibi_boss.png', advice: '你只看數字，不看人。但螢幕的另一邊，是一個真實的人。再玩一次，換個角度看看。' },
   ];
   var LETTERS = ['A', 'B', 'C'];
   var i = 0, score = 0, answered = false;
@@ -83,6 +84,9 @@
     var type = TYPES.filter(function (t) { return score >= t.min; })[0];
     document.getElementById('qScore').textContent = '答對 ' + score + ' / ' + Q.length + ' 題';
     document.getElementById('qType').textContent = '你是「' + type.name + '」';
+    var chibi = document.getElementById('qChibi');
+    chibi.src = type.img; chibi.alt = type.name + '（Q 版）';
+    chibi.classList.remove('pop'); void chibi.offsetWidth; chibi.classList.add('pop');
     document.getElementById('qAdvice').textContent = type.advice;
     result.classList.add('show');
     idx.textContent = '完成';
