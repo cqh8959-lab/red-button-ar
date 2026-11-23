@@ -51,14 +51,14 @@ button { font: inherit; color: inherit; }
 @keyframes bump { 0% { transform: scale(1); } 40% { transform: scale(1.06); } 100% { transform: scale(1); } }
 .counter-unit { font-weight: 900; letter-spacing: .3em; color: rgba(242,239,248,.35); margin-top: -4px; }
 
-.notes { position: absolute; left: 28px; top: 132px; z-index: 6; display: grid; gap: 14px; }
-.note { width: 150px; text-align: left; border: 0; cursor: pointer; padding: 10px 14px 12px; background: var(--sticky); color: var(--paper-ink); box-shadow: 0 8px 16px rgba(0,0,0,.35); display: grid; transition: transform .45s var(--ease-back), background-color .3s var(--ease); }
-.note:nth-child(1) { rotate: -3deg; } .note:nth-child(2) { rotate: 2deg; background: #f1a3b2; } .note:nth-child(3) { rotate: -1.5deg; background: #9fd3b8; }
-.note b { font-size: 20px; line-height: 1.3; }
-.note span { font-size: 12px; opacity: .75; }
-.note:hover { animation: wiggle .6s var(--ease); }
-.note.on { transform: translateX(14px) scale(1.06); }
-
+/* 左邊：三個角色的小圖（點了換角色；選中的浮起來、比較亮） */
+.notes { position: absolute; left: 28px; top: 120px; z-index: 6; display: grid; gap: 6px; }
+.note { border: 0; background: radial-gradient(ellipse 50% 45% at 50% 55%, rgba(243,234,211,.16), transparent 70%); padding: 4px 14px; cursor: pointer; display: grid; justify-items: center; gap: 2px; color: var(--ink); }
+.note img { height: 104px; width: auto; opacity: .55; filter: drop-shadow(0 6px 10px rgba(0,0,0,.5)); transition: transform .45s var(--ease-back), opacity .35s var(--ease); pointer-events: none; }
+.note span { font-size: 13px; font-weight: 700; letter-spacing: .15em; opacity: .7; transition: opacity .35s var(--ease); }
+.note:hover img { transform: translateY(-6px) rotate(-3deg); opacity: .85; }
+.note.on img { opacity: 1; transform: translateY(-8px) scale(1.08); }
+.note.on span { opacity: 1; color: var(--sticky); }
 .hero-char { position: absolute; left: 50%; bottom: 13vh; height: 64vh; width: auto; z-index: 3; transform: translateX(-50%); cursor: grab; touch-action: none; will-change: transform; filter: drop-shadow(0 16px 26px rgba(0,0,0,.5)); }
 .hero-char.dragging { cursor: grabbing; }
 #liquid { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 4; pointer-events: none; }
@@ -208,10 +208,8 @@ footer { text-align: center; padding: 32px 16px; color: var(--muted); font-size:
   .topbar nav { display: none; }
   .ticker { top: 50px; height: 30px; }
   .stage { min-height: 680px; }
-  .notes { left: 16px; right: 16px; top: 92px; grid-auto-flow: column; grid-template-columns: repeat(3, 1fr); gap: 10px; }
-  .note { width: auto; padding: 6px 10px 8px; }
-  .note b { font-size: 16px; }
-  .note.on { transform: translateY(6px) scale(1.04); }
+  .notes { left: 16px; top: 88px; grid-auto-flow: column; gap: 4px; }
+  .note img { height: 64px; }
   .counter { top: 26%; }
   .hero-char { height: 46vh; bottom: 15vh; }
   .console { top: auto; bottom: 16px; right: 16px; width: 150px; padding: 10px; rotate: 0deg; }
