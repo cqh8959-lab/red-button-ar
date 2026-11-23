@@ -12,158 +12,143 @@
 </head>
 <body>
 
-<main id="top">
+<!-- ================= 開場：深夜的發布台 ================= -->
+<section class="stage" id="top">
+  <header class="topbar">
+    <a class="logo" href="#top"><i class="logo-dot"></i>主編的紅色按鈕</a>
+    <nav>
+      <a href="#desk">編輯台</a>
+      <a href="#nights">三個晚上</a>
+      <a href="#people">角色</a>
+      <a href="#lens">濾鏡明信片</a>
+      <a href="#quiz">識讀小問答</a>
+    </nav>
+  </header>
+  <div class="ticker" aria-hidden="true"><div class="ticker-track" id="tickerTrack"></div></div>
 
-  <!-- 1. 開場：角色站在「流量」裡。拿起來、搖一搖、再放回去 -->
-  <section class="stage" id="stage" data-theme="0">
-    <header class="stage-nav">
-      <a class="logo" href="#top">主編的紅色按鈕<i></i></a>
-      <nav>
-        <a href="#story">故事</a>
-        <a href="#chapters">三個晚上</a>
-        <a href="#people">角色</a>
-        <a href="#ar">AR 名片</a>
-      </nav>
-    </header>
+  <div class="counter" aria-live="polite">
+    <span class="counter-num" id="viewNum">0</span>
+    <span class="counter-unit">萬次點閱</span>
+  </div>
 
-    <div class="word" aria-hidden="true"><span id="bigWord">流量</span></div>
+  <div class="notes" role="tablist" aria-label="選角色">
+    <button class="note on" data-i="0" role="tab" aria-selected="true"><b>你</b><span>新進編輯</span></button>
+    <button class="note" data-i="1" role="tab" aria-selected="false"><b>李蔓緹</b><span>主編</span></button>
+    <button class="note" data-i="2" role="tab" aria-selected="false"><b>老闆</b><span>實像傳媒</span></button>
+  </div>
 
-    <div class="side left">
-      <h1 id="title">按下去</h1>
-      <div class="label">
-        <div class="row head"><span>編輯檔案</span><span>第 <b id="night">1</b> 夜</span></div>
-        <div class="bar"></div>
-        <div class="row"><span id="k1">職位</span><b id="v1">新進編輯</b></div>
-        <div class="row"><span id="k2">良心</span><b id="v2">100%</b></div>
-      </div>
-      <p class="stamp" id="stamp">RI-041　BB 2026.11.22　23:10</p>
-    </div>
+  <img class="hero-char" id="heroChar" src="img/char1.png" alt="你，實像傳媒新進編輯" draggable="false">
+  <canvas id="liquid" aria-hidden="true"></canvas>
 
-    <div class="side right">
-      <p class="tiny" id="bigLabel">流量加成</p>
-      <p class="big" id="bigNum">+1100%</p>
-      <div class="fizz"><span>流量</span><span>爆</span></div>
-      <div class="fizz-bar"><i id="fizzFill"></i></div>
-    </div>
+  <aside class="console" aria-label="發布台">
+    <p class="console-head"><span>發布台</span><span id="pubCount">第 1 則</span></p>
+    <p class="console-headline" id="nextHeadline">女星宋羽晴深夜現身</p>
+    <button class="red-btn" id="redBtn" aria-label="按下去，發布這則標題"><span class="cap"></span></button>
+    <p class="console-label">按下去</p>
+  </aside>
 
-    <img class="hero-char" id="heroChar" src="img/char1.png" alt="你，實像傳媒新進編輯" draggable="false">
-    <canvas id="liquid" aria-hidden="true"></canvas>
+  <p class="hint" id="stageHint">按住角色可以拿起來、搖一搖</p>
 
-    <div class="bottom">
-      <p class="copy" id="copy">剛到實像傳媒報到的新人。桌上那顆紅色按鈕，按下去就是流量。</p>
-      <p class="hint">拿起角色・搖一搖・再放回去</p>
-    </div>
-    <div class="picker" role="tablist" aria-label="選角色">
-      <button class="pick on" data-i="0" role="tab" aria-selected="true"><img src="img/char1.png" alt=""><span>你</span></button>
-      <button class="pick" data-i="1" role="tab" aria-selected="false"><img src="img/char2.png" alt=""><span>主編</span></button>
-      <button class="pick" data-i="2" role="tab" aria-selected="false"><img src="img/char3.png" alt=""><span>老闆</span></button>
-    </div>
-    <a class="cta" href="../">打開 AR 名片</a>
-  </section>
+  <div class="flooded" id="flooded" aria-live="polite">
+    <p>螢幕的另一邊，是一個真實的人。</p>
+    <button class="pill" id="drainBtn">讓流量退潮</button>
+  </div>
+</section>
 
-  <!-- 2. 故事 -->
-  <section id="story" class="band">
+<main>
+
+  <!-- ================= 故事＋編輯台 ================= -->
+  <section id="desk" class="band">
     <div class="wrap two">
       <div class="reveal">
+        <p class="kicker">故事</p>
         <h2>你是實像傳媒的新進編輯</h2>
         <p>桌上有一顆紅色按鈕。按下去，新聞就發出去；發出去，點閱就往上跳。</p>
         <p>總編只在乎一個數字。三個晚上，你要把一位女演員的新聞送上發燒榜第一名。</p>
-        <p>每一次選標題、裁照片、剪錄音，都只是動一動手指。可是螢幕的另一邊，是一個真實的人。</p>
+        <p class="muted">試試看：右邊的編輯台，換一個標題。</p>
       </div>
-      <figure class="polaroid reveal">
-        <img src="img/office.jpg" alt="實像傳媒的編輯部，深夜">
-        <figcaption>晚上 23:10，編輯部只剩你一個人</figcaption>
-      </figure>
-    </div>
-  </section>
-
-  <!-- 3. 三個晚上 -->
-  <section id="chapters" class="band dark">
-    <div class="wrap">
-      <h2 class="reveal">三個晚上，三種「剪」法</h2>
-      <div class="cards">
-        <article class="card reveal">
-          <div class="num">第一章</div>
-          <h3>新聞編輯部</h3>
-          <p>從一疊照片裡挑三張，裁掉不需要的部分，配上最吸睛的標題。照片外面還有什麼？</p>
-        </article>
-        <article class="card reveal">
-          <div class="num">第二章</div>
-          <h3>話題串</h3>
-          <p>一段訪談錄音寄到你的信箱。只要剪掉半句話，意思就完全不一樣了。</p>
-        </article>
-        <article class="card reveal">
-          <div class="num">第三章</div>
-          <h3>直播控制室</h3>
-          <p>現場直播，導播台在你手上。觀眾越多，你越停不下來。</p>
-        </article>
-      </div>
-    </div>
-  </section>
-
-  <!-- 4. 角色 -->
-  <section id="people" class="band">
-    <div class="wrap">
-      <h2 class="reveal">角色</h2>
-      <div class="people">
-        <article class="person reveal">
-          <div class="portrait"><img src="img/char1.png" alt="你，實像傳媒新進編輯"></div>
-          <h3>你</h3>
-          <p class="role">實像傳媒・新進編輯</p>
-          <p>剛到實像傳媒報到的新人。想做好新聞，也想被看見。</p>
-        </article>
-        <article class="person reveal">
-          <div class="portrait"><img src="img/char2.png" alt="李蔓緹，實像傳媒主編"></div>
-          <h3>李蔓緹</h3>
-          <p class="role">實像傳媒・主編</p>
-          <p>你的上司。她只在乎一個數字：點閱。</p>
-        </article>
-        <article class="person reveal">
-          <div class="portrait"><img src="img/char3.png" alt="實像傳媒的老闆"></div>
-          <h3>老闆</h3>
-          <p class="role">實像傳媒・老闆</p>
-          <p>他看的不是新聞，是報表上的數字。</p>
-        </article>
-      </div>
-    </div>
-  </section>
-
-  <!-- 5. 特色 -->
-  <section id="play" class="band dark">
-    <div class="wrap">
-      <h2 class="reveal">遊戲特色</h2>
-      <div class="two">
-        <ul class="features reveal">
-          <li><b>真相碎片</b>每一章都藏著被剪掉的線索，收集起來，結局會不一樣。</li>
-          <li><b>你是哪一種編輯</b>你選的每一個標題，都會被記下來。</li>
-          <li><b>下班前的空檔</b>喝杯咖啡、滑一下手機，看看她今天說了什麼。</li>
-          <li><b>設定集</b>角色、場景和主編日記，玩到哪裡就解鎖到哪裡。</li>
-        </ul>
-        <div class="browser reveal" aria-label="章節結算：良心、金錢、流量">
-          <div class="bar"><i></i><i></i><i></i><span>realimage.com.tw/editor/report</span></div>
-          <div class="stats">
-            <div class="stat" data-from="100" data-to="35"><div class="pct">100%</div><div class="capsule"><div class="fill c1"></div></div><div class="name">良心</div></div>
-            <div class="stat" data-from="0" data-to="100"><div class="pct">0%</div><div class="capsule"><div class="fill c2"></div></div><div class="name">金錢</div></div>
-            <div class="stat" data-from="0" data-to="100"><div class="pct">0%</div><div class="capsule"><div class="fill c3"></div></div><div class="name">流量</div></div>
-          </div>
-          <p class="caption">每一章結束，看看你換到了什麼，又失去了什麼。</p>
+      <div class="paper reveal" id="draft">
+        <div class="paper-top"><span>草稿</span><span class="mono">23:10</span></div>
+        <h3 class="draft-title" id="draftTitle">女演員宋羽晴出席活動，談近況</h3>
+        <div class="gauges">
+          <div class="gauge"><span>流量</span><div class="track"><i id="gTraffic" style="width:12%"></i></div></div>
+          <div class="gauge"><span>良心</span><div class="track"><i class="g2" id="gConscience" style="width:95%"></i></div></div>
+        </div>
+        <div class="choices" role="radiogroup" aria-label="選標題">
+          <button class="choice on" data-t="女演員宋羽晴出席活動，談近況" data-v="12" data-c="95" role="radio" aria-checked="true">照實寫</button>
+          <button class="choice" data-t="宋羽晴深夜崩潰？畫面曝光" data-v="58" data-c="60" role="radio" aria-checked="false">加個問號</button>
+          <button class="choice" data-t="【獨家】宋羽晴失控！網友：退圈吧" data-v="96" data-c="18" role="radio" aria-checked="false">最聳動</button>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- 濾鏡明信片：拖著鏡片看，紅色只看得到人，藍色看得到全部 -->
-  <section id="lens" class="band">
+  <div class="wave-sep" aria-hidden="true"><canvas></canvas></div>
+
+  <!-- ================= 三個晚上（翻牌） ================= -->
+  <section id="nights" class="band dark">
     <div class="wrap">
-      <h2 class="reveal">濾鏡明信片</h2>
-      <p class="reveal lens-intro">直接看，只是一團亂。戴上鏡片，才看得到被藏起來的畫面。<br>拖著鏡片在明信片上移動，換換看紅色和藍色。</p>
+      <p class="kicker reveal">三個晚上</p>
+      <h2 class="reveal">三種「剪」法</h2>
+      <p class="muted reveal">點一下便條紙，翻到背面。</p>
+      <div class="flips">
+        <button class="flip reveal" aria-label="第一章：新聞編輯部">
+          <span class="face front"><em>第一章</em><b>新聞編輯部</b><small>晚上 23:10</small></span>
+          <span class="face back">從一疊照片裡挑三張，裁掉不需要的部分，配上最吸睛的標題。<br><br>照片外面，還有什麼？</span>
+        </button>
+        <button class="flip reveal" aria-label="第二章：話題串">
+          <span class="face front"><em>第二章</em><b>話題串</b><small>凌晨 02:50</small></span>
+          <span class="face back">一段訪談錄音寄到你的信箱。<br><br>只要剪掉半句話，意思就完全不一樣了。</span>
+        </button>
+        <button class="flip reveal" aria-label="第三章：直播控制室">
+          <span class="face front"><em>第三章</em><b>直播控制室</b><small>清晨 05:30</small></span>
+          <span class="face back">現場直播，導播台在你手上。<br><br>觀眾越多，你越停不下來。</span>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= 角色（滑鼠傾斜、點了說話） ================= -->
+  <section id="people" class="band">
+    <div class="wrap">
+      <p class="kicker reveal">角色</p>
+      <h2 class="reveal">他們都在這間編輯部</h2>
+      <p class="muted reveal">點一下角色，聽聽他們怎麼說。</p>
+      <div class="people">
+        <button class="person reveal" data-say="「我只是想做好新聞……也想被看見。」">
+          <span class="portrait"><img src="img/char1.png" alt="" draggable="false"></span>
+          <span class="bubble"></span>
+          <b>你</b><small>實像傳媒・新進編輯</small>
+        </button>
+        <button class="person reveal" data-say="「標題再狠一點。天亮前，我要看到第一名。」">
+          <span class="portrait"><img src="img/char2.png" alt="" draggable="false"></span>
+          <span class="bubble"></span>
+          <b>李蔓緹</b><small>實像傳媒・主編</small>
+        </button>
+        <button class="person reveal" data-say="「新聞？我只看報表上的數字。」">
+          <span class="portrait"><img src="img/char3.png" alt="" draggable="false"></span>
+          <span class="bubble"></span>
+          <b>老闆</b><small>實像傳媒・老闆</small>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <div class="wave-sep flip-y" aria-hidden="true"><canvas></canvas></div>
+
+  <!-- ================= 濾鏡明信片 ================= -->
+  <section id="lens" class="band dark">
+    <div class="wrap">
+      <p class="kicker reveal">濾鏡明信片</p>
+      <h2 class="reveal">直接看，只是一團亂</h2>
+      <p class="muted reveal">拖著鏡片在明信片上移動，換換看紅色和藍色。</p>
       <div class="lens-stage reveal" id="lensStage">
         <img class="lens-base" src="img/postcard.jpg" alt="濾鏡明信片：肉眼看是交疊的洋紅色圖案" draggable="false">
         <img class="lens-view" id="lensRed" src="img/postcard_red.jpg" alt="" draggable="false">
         <img class="lens-view" id="lensBlue" src="img/postcard_blue.jpg" alt="" draggable="false">
         <div class="lens-ring" id="lensRing" aria-hidden="true"></div>
       </div>
-      <div class="lens-pick reveal" role="tablist" aria-label="選鏡片">
+      <div class="lens-pick" role="tablist" aria-label="選鏡片">
         <button class="lp on" data-lens="red" role="tab" aria-selected="true"><i class="dot r"></i>紅色鏡片</button>
         <button class="lp" data-lens="blue" role="tab" aria-selected="false"><i class="dot b"></i>藍色鏡片</button>
       </div>
@@ -171,10 +156,35 @@
     </div>
   </section>
 
-  <!-- 6. AR 名片 -->
-  <section id="ar" class="band">
+  <!-- ================= 媒體識讀小問答 ================= -->
+  <section id="quiz" class="band">
+    <div class="wrap narrow">
+      <p class="kicker reveal">媒體識讀小問答</p>
+      <h2 class="reveal">換你當讀者</h2>
+      <p class="muted reveal">8 題，每題選一個。答完會告訴你，你是哪一種讀者。</p>
+      <div class="quiz reveal" id="quizBox">
+        <div class="quiz-top"><span id="qIndex">第 1 題 / 8</span><div class="quiz-progress"><i id="qBar"></i></div></div>
+        <div class="quiz-card" id="qCard">
+          <h3 id="qText"></h3>
+          <div class="quiz-options" id="qOptions"></div>
+          <div class="quiz-explain" id="qExplain" aria-live="polite"></div>
+          <button class="pill quiz-next" id="qNext">下一題</button>
+        </div>
+        <div class="quiz-result" id="qResult" aria-live="polite">
+          <p class="mono" id="qScore"></p>
+          <h3 id="qType"></h3>
+          <p id="qAdvice"></p>
+          <button class="pill" id="qRetry">再玩一次</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= AR 名片 ================= -->
+  <section id="ar" class="band dark">
     <div class="wrap two">
       <div class="reveal">
+        <p class="kicker">AR 名片</p>
         <h2>掃描名片，角色就站在你桌上</h2>
         <p>用手機打開 AR 頁面，對準《主編的紅色按鈕》名片，角色會以全息投影的樣子出現在名片上方。</p>
         <a class="pill" href="../">打開 AR 名片</a>
@@ -183,19 +193,14 @@
     </div>
   </section>
 
-  <!-- 7. 我們想說的事 -->
-  <section class="band dark">
-    <div class="wrap narrow reveal">
-      <h2>我們想說的事</h2>
-      <p>一則標題只要幾秒鐘就能寫好，卻可能跟著一個人很多年。這款遊戲想讓玩家站在編輯的位置，親手體會「流量」和「良心」之間的拉扯。</p>
-      <p class="help">如果你或身邊的人正因為網路上的言論感到痛苦，可以撥打安心專線 <b>1925</b>（24 小時，免付費）。</p>
-    </div>
-  </section>
-
-  <!-- 8. 製作團隊 -->
+  <!-- ================= 我們想說的事＋團隊 ================= -->
   <section class="band">
     <div class="wrap narrow reveal">
-      <h2>製作團隊</h2>
+      <p class="kicker">我們想說的事</p>
+      <h2>一則標題只要幾秒鐘</h2>
+      <p>卻可能跟著一個人很多年。這款遊戲想讓玩家站在編輯的位置，親手體會「流量」和「良心」之間的拉扯。</p>
+      <p class="help">如果你或身邊的人正因為網路上的言論感到痛苦，可以撥打安心專線 <b>1925</b>（24 小時，免付費）。</p>
+      <h3 class="team-title">製作團隊</h3>
       <p class="muted">（組員名字、分工、學校或課程，之後再填上）</p>
     </div>
   </section>
@@ -206,8 +211,9 @@
   <p>主編的紅色按鈕　|　遊戲中的媒體、人物與平台皆為虛構</p>
 </footer>
 
-<script src="site.js"></script>
 <script src="stage.js"></script>
+<script src="site.js"></script>
 <script src="lens.js"></script>
+<script src="quiz.js"></script>
 </body>
 </html>
