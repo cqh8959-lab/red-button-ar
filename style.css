@@ -98,3 +98,5 @@ a.ghost { color: var(--cyan); font-size: 15px; text-decoration: none; padding: 8
   padding: 8px 14px; border-radius: 999px; font-size: 13px;
   background: rgba(11, 8, 32, .7); color: var(--muted);
 }
+
+.brand .wordmark { width: min(78vw, 340px); height: auto; display: block; margin: 0 auto 10px; filter: drop-shadow(0 4px 10px rgba(0,0,0,.45)); }

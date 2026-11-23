@@ -39,7 +39,7 @@ button { font: inherit; color: inherit; }
 .topbar nav a { text-decoration: none; color: var(--muted); font-size: 15px; font-weight: 700; transition: color .3s var(--ease); }
 .topbar nav a:hover { color: var(--ink); }
 
-.ticker { position: absolute; left: 0; right: 0; top: 58px; height: 34px; z-index: 7; background: var(--red); overflow: hidden; display: flex; align-items: center; transition: background-color .6s var(--ease); }
+.ticker { position: absolute; left: 0; right: 0; top: 76px; height: 34px; z-index: 7; background: var(--red); overflow: hidden; display: flex; align-items: center; transition: background-color .6s var(--ease); }
 .ticker.alarm { background: #5a0b10; }
 .ticker-track { display: flex; gap: 48px; white-space: nowrap; font-weight: 700; font-size: 14px; animation: tick 40s linear infinite; padding-left: 100%; }
 .ticker-track span::before { content: "快訊"; background: #fff; color: var(--red); border-radius: 4px; padding: 0 6px; margin-right: 10px; font-size: 12px; }
@@ -206,7 +206,8 @@ footer { text-align: center; padding: 32px 16px; color: var(--muted); font-size:
 @media (max-width: 860px) {
   .topbar { padding: 12px 16px; }
   .topbar nav { display: none; }
-  .ticker { top: 50px; height: 30px; }
+  .ticker { top: 62px; height: 30px; }
+  .notes { top: 108px; }
   .stage { min-height: 680px; }
   .notes { left: 16px; top: 88px; grid-auto-flow: column; gap: 4px; }
   .note img { height: 64px; }
@@ -240,3 +241,9 @@ footer { text-align: center; padding: 32px 16px; color: var(--muted); font-size:
 @keyframes chibiPop { from { transform: scale(.3) translateY(40px); opacity: 0; } to { transform: none; opacity: 1; } }
 @keyframes chibiBob { 0%,100% { transform: translateY(0) rotate(0deg); } 50% { transform: translateY(-6px) rotate(1.5deg); } }
 @media (max-width: 860px) { .q-chibi { height: 180px; } }
+
+/* 標準字：左上角（往下捲變小一點）、頁尾 */
+.logo img { height: 46px; width: auto; display: block; transition: height .35s var(--ease); filter: drop-shadow(0 3px 6px rgba(0,0,0,.4)); }
+.topbar.scrolled .logo img { height: 36px; }
+.foot-mark { height: 64px; width: auto; margin: 0 auto 10px; }
+@media (max-width: 860px) { .logo img { height: 36px; } }
