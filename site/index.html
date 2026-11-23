@@ -8,7 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="site.css?v=20261124">
+<link rel="stylesheet" href="site.css?v=20261125">
 </head>
 <body>
 
@@ -21,7 +21,7 @@
       <a href="#nights">三個晚上</a>
       <a href="#people">角色</a>
       <a href="#lens">濾鏡明信片</a>
-      <a href="#quiz">識讀小問答</a>
+      <a href="#quiz">測你是哪個角色</a>
     </nav>
   </header>
   <div class="ticker" aria-hidden="true"><div class="ticker-track" id="tickerTrack"></div></div>
@@ -159,9 +159,15 @@
   <!-- ================= 媒體識讀小問答 ================= -->
   <section id="quiz" class="band">
     <div class="wrap narrow">
-      <p class="kicker reveal">媒體識讀小問答</p>
-      <h2 class="reveal">換你當讀者</h2>
-      <p class="muted reveal">8 題，每題選一個。答完會告訴你，你是哪一種讀者。</p>
+      <p class="kicker reveal">媒體識讀小問答・測測你是哪個角色</p>
+      <h2 class="reveal">你最像遊戲裡的哪一個角色？</h2>
+      <p class="reveal">換你當讀者：8 題媒體識讀小問答，每題選一個。<b>全部答完，就會知道你的個性最像下面哪一個角色。</b></p>
+      <div class="who reveal" aria-label="可能的結果">
+        <figure><img src="img/chibi_song.png" alt="" draggable="false"><figcaption>宋羽晴</figcaption></figure>
+        <figure><img src="img/chibi_player.png" alt="" draggable="false"><figcaption>劉煦睿</figcaption></figure>
+        <figure><img src="img/chibi_editor.png" alt="" draggable="false"><figcaption>李蔓緹</figcaption></figure>
+        <figure><img src="img/chibi_boss.png" alt="" draggable="false"><figcaption>沈崇德</figcaption></figure>
+      </div>
       <div class="quiz reveal" id="quizBox">
         <div class="quiz-top"><span id="qIndex">第 1 題 / 8</span><div class="quiz-progress"><i id="qBar"></i></div></div>
         <div class="quiz-card" id="qCard">
@@ -177,8 +183,33 @@
           <h3 id="qType"></h3>
           <p id="qAdvice"></p>
           <button class="pill" id="qRetry">再玩一次</button>
+          <p class="q-more"><a href="#check">想查證消息？看看下面的查證工具箱</a></p>
         </div>
       </div>
+    </div>
+  </section>
+
+  <!-- ================= 查證工具箱 ================= -->
+  <section id="check" class="band dark">
+    <div class="wrap">
+      <p class="kicker reveal">查證工具箱</p>
+      <h2 class="reveal">看到可疑的消息？可以到這些地方查</h2>
+      <p class="muted reveal">分享之前，先查一下。點卡片會開新分頁。</p>
+      <div class="tools">
+        <a class="tool reveal" href="https://tfc-taiwan.org.tw/" target="_blank" rel="noopener noreferrer">
+          <b>台灣事實查核中心</b><span>專業的事實查核組織，查證網路上流傳的新聞、圖片和說法，並寫出完整的查核報告。</span><em>查新聞、查說法</em></a>
+        <a class="tool reveal" href="https://www.mygopen.com/" target="_blank" rel="noopener noreferrer">
+          <b>MyGoPen</b><span>專門查證網路謠言、詐騙訊息和假影片，常見的轉傳訊息大多查得到。</span><em>查謠言、查詐騙</em></a>
+        <a class="tool reveal" href="https://cofacts.tw/" target="_blank" rel="noopener noreferrer">
+          <b>Cofacts 真的假的</b><span>由大家一起協作的查證資料庫，把收到的轉傳訊息貼上去，就能看到別人的查證回覆。</span><em>查轉傳訊息</em></a>
+        <a class="tool reveal" href="https://www.rumtoast.com/" target="_blank" rel="noopener noreferrer">
+          <b>蘭姆酒吐司</b><span>用輕鬆好懂的方式拆解網路謠言，也有很多「怎麼判斷消息真假」的教學。</span><em>學怎麼判斷</em></a>
+        <a class="tool reveal" href="https://images.google.com/" target="_blank" rel="noopener noreferrer">
+          <b>Google 以圖搜圖</b><span>上傳圖片或貼上圖片網址，找出這張圖最早在哪裡出現、原本是在說什麼。</span><em>查圖片出處</em></a>
+        <a class="tool reveal" href="https://tineye.com/" target="_blank" rel="noopener noreferrer">
+          <b>TinEye</b><span>另一個以圖搜圖工具，可以依照時間排序，找到同一張圖最早的版本。</span><em>查舊圖新用</em></a>
+      </div>
+      <p class="tool-tip reveal">小提醒：一個網站說是真的，不代表一定是真的。多比對幾個來源，看看不同立場怎麼說。</p>
     </div>
   </section>
 
@@ -214,10 +245,10 @@
   <p>主編的紅色按鈕　|　遊戲中的媒體、人物與平台皆為虛構</p>
 </footer>
 
-<script src="stage.js?v=20261124"></script>
-<script src="site.js?v=20261124"></script>
-<script src="lens.js?v=20261124"></script>
-<script src="quiz.js?v=20261124"></script>
-<script src="transition.js?v=20261124"></script>
+<script src="stage.js?v=20261125"></script>
+<script src="site.js?v=20261125"></script>
+<script src="lens.js?v=20261125"></script>
+<script src="quiz.js?v=20261125"></script>
+<script src="transition.js?v=20261125"></script>
 </body>
 </html>

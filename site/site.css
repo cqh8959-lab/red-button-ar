@@ -247,3 +247,22 @@ footer { text-align: center; padding: 32px 16px; color: var(--muted); font-size:
 .topbar.scrolled .logo img { height: 36px !important; }
 .foot-mark { height: 64px; width: auto; margin: 0 auto 10px; }
 @media (max-width: 860px) { .logo img { height: 36px !important; } }
+
+/* 問答前：四個可能的結果（Q 版） */
+.who { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin: 6px 0 22px; }
+.who figure { margin: 0; text-align: center; }
+.who img { height: 120px; width: auto; margin: 0 auto; filter: drop-shadow(0 6px 10px rgba(0,0,0,.4)); transition: transform .45s var(--ease-back); }
+.who figure:hover img { transform: translateY(-8px) rotate(-3deg); }
+.who figcaption { font-weight: 700; font-size: 14px; color: var(--muted); margin-top: 4px; }
+@media (max-width: 860px) { .who img { height: 84px; } }
+
+/* 查證工具箱 */
+.tools { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 10px; }
+.tool { display: grid; gap: 6px; align-content: start; background: var(--paper); color: var(--paper-ink); text-decoration: none; border-radius: 12px; padding: 18px 18px 16px; box-shadow: 0 12px 24px rgba(0,0,0,.35); transition: transform .35s var(--ease); }
+.tool:hover { transform: translateY(-6px); }
+.tool b { font-size: 20px; }
+.tool span { font-size: 14px; line-height: 1.7; }
+.tool em { font-style: normal; justify-self: start; background: var(--red); color: #fff; font-weight: 700; font-size: 12px; border-radius: 99px; padding: 2px 12px; margin-top: 4px; }
+.tool-tip { margin-top: 20px; color: var(--muted); text-align: center; }
+@media (max-width: 860px) { .tools { grid-template-columns: 1fr; } }
+.q-more { margin: 14px 0 0; font-size: 14px; } .q-more a { color: var(--red); font-weight: 700; }
