@@ -244,6 +244,6 @@ footer { text-align: center; padding: 32px 16px; color: var(--muted); font-size:
 
 /* 標準字：左上角（往下捲變小一點）、頁尾 */
 .logo img { height: 46px; width: auto; display: block; transition: height .35s var(--ease); filter: drop-shadow(0 3px 6px rgba(0,0,0,.4)); }
-.topbar.scrolled .logo img { height: 36px; }
+.topbar.scrolled .logo img { height: 36px !important; }
 .foot-mark { height: 64px; width: auto; margin: 0 auto 10px; }
-@media (max-width: 860px) { .logo img { height: 36px; } }
+@media (max-width: 860px) { .logo img { height: 36px !important; } }
