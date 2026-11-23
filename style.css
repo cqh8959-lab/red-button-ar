@@ -100,3 +100,6 @@ a.ghost { color: var(--cyan); font-size: 15px; text-decoration: none; padding: 8
 }
 
 .brand .wordmark { width: min(78vw, 340px); height: auto; display: block; margin: 0 auto 10px; filter: drop-shadow(0 4px 10px rgba(0,0,0,.45)); }
+
+.brand .sub { display: flex; align-items: center; justify-content: center; gap: 10px; }
+.brand .sub .org { display: block; }
