@@ -221,3 +221,10 @@ footer { text-align: center; padding: 32px 16px; color: var(--muted); font-size:
   .two, .flips, .people { grid-template-columns: 1fr; }
   .person .portrait { height: 300px; }
 }
+
+/* ================= 切換畫面：流量淹過 ================= */
+.flow-cover { position: fixed; inset: 0; width: 100vw; height: 100vh; z-index: 100; pointer-events: none; display: none; }
+.flow-cover.on { display: block; pointer-events: auto; }
+/* 往下捲：每一區從下往上被揭開 */
+.band.unveil { clip-path: inset(18% 0 0 0 round 40px 40px 0 0); transition: clip-path 1s var(--ease); }
+.band.unveil.unveiled { clip-path: inset(0 0 0 0 round 0 0 0 0); }

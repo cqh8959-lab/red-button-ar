@@ -163,6 +163,10 @@
     document.getElementById('stageHint').style.opacity = '0';
   });
   document.getElementById('drainBtn').addEventListener('click', function () {
+    if (window.flowTransition) { window.flowTransition(drain); return; }   // 整個畫面被流量淹過，退潮後回到一開始
+    drain();
+  });
+  function drain() {
     presses = 0; levelTarget = BASE;
     document.getElementById('flooded').classList.remove('show');
     stage.classList.remove('flooded-on');
@@ -172,7 +176,7 @@
     setHeadline(HEADLINES[0]); countEl.textContent = '第 1 則';
     countTo(0);
     for (var k = 0; k < 30; k++) addBubble(Math.random() * W, H * 0.7 + Math.random() * H * 0.3, true);
-  });
+  }
 
   // ---------- 角色：拿起來、搖一搖、放回去 ----------
   var pos = { x: 0, y: 0 }, vel = { x: 0, y: 0 }, rot = 0, sinkY = 0;
