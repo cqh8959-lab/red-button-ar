@@ -166,8 +166,82 @@ function buildHologram() {
   return { root, pivot, stand, disc, ring1, ring2, beam, points, pMat, speed, scanRing, chars };
 }
 
+// ---------------- 窗戶傳送門：名片變成一扇窗，裡面是凹進去的深夜編輯部 ----------------
+//   做法：名片後面放一個凹進去的盒子（背景牆＋四面牆），三個角色排在不同深度（近的晃得多、遠的晃得少＝有深度）
+//   名片框框外面放一圈「看不見、但會擋東西」的牆，所以只能從框框裡看到盒子裡面
+//   紅色按鈕故意凸出名片一點，像要跳出來
+const PORTAL_DEPTH = 0.42;
+function buildPortal() {
+  const group = new THREE.Group();
+  const loader = new THREE.TextureLoader();
+  const W = 0.94, H = CARD_ASPECT * 0.9;                          // 窗戶大小（比名片小一圈）
+
+  // 看不見的遮罩：一大片中間挖一個窗戶的牆（只寫深度，不畫顏色）
+  const outer = new THREE.Shape();
+  outer.moveTo(-4, -4); outer.lineTo(4, -4); outer.lineTo(4, 4); outer.lineTo(-4, 4); outer.lineTo(-4, -4);
+  const hole = new THREE.Path();
+  hole.moveTo(-W / 2, -H / 2); hole.lineTo(W / 2, -H / 2); hole.lineTo(W / 2, H / 2); hole.lineTo(-W / 2, H / 2); hole.lineTo(-W / 2, -H / 2);
+  outer.holes.push(hole);
+  const occluderMat = new THREE.MeshBasicMaterial({ colorWrite: false, depthWrite: true });
+  const occluder = new THREE.Mesh(new THREE.ShapeGeometry(outer), occluderMat);
+  occluder.renderOrder = -1; group.add(occluder);
+
+  // 盒子裡面（只看得到內側）：四面牆由深到淺的顏色，越裡面越暗
+  const inside = new THREE.Group(); group.add(inside);
+  const wallMat = c => new THREE.MeshBasicMaterial({ color: c, side: THREE.BackSide });
+  const box = new THREE.Mesh(new THREE.BoxGeometry(W, H, PORTAL_DEPTH),
+    [wallMat(0x1a1440), wallMat(0x1a1440), wallMat(0x231a52), wallMat(0x120e2e), wallMat(0x000000), wallMat(0x0b0820)]);
+  box.position.z = -PORTAL_DEPTH / 2; inside.add(box);
+  // 背景牆：深夜編輯部（保持比例填滿）
+  const back = new THREE.Mesh(new THREE.PlaneGeometry(W * 0.999, H * 0.999), new THREE.MeshBasicMaterial({ color: 0x8a86b8 }));
+  back.position.z = -PORTAL_DEPTH + 0.002; inside.add(back);
+  loader.load('site/img/office.jpg', t => {
+    t.colorSpace = THREE.SRGBColorSpace;
+    const ta = t.image.width / t.image.height, wa = W / H;
+    if (ta > wa) { t.repeat.set(wa / ta, 1); t.offset.set((1 - wa / ta) / 2, 0); } else { t.repeat.set(1, ta / wa); t.offset.set(0, (1 - ta / wa) / 2); }
+    back.material.map = t; back.material.needsUpdate = true;
+  });
+
+  // 三個角色站在不同深度（遠的比較大，透視之後看起來差不多）
+  const layout = [
+    { img: 'assets/char3.png', x: 0.28, z: -0.3, h: 0.5 },
+    { img: 'assets/char2.png', x: -0.27, z: -0.2, h: 0.44 },
+    { img: 'assets/char1.png', x: 0.02, z: -0.1, h: 0.4 },
+  ];
+  const people = layout.map(l => {
+    const m = new THREE.Mesh(new THREE.PlaneGeometry(1, 1), new THREE.MeshBasicMaterial({ transparent: true, alphaTest: 0.05, depthWrite: true }));
+    m.geometry.translate(0, 0.5, 0);
+    loader.load(l.img, t => { t.colorSpace = THREE.SRGBColorSpace; m.material.map = t; m.material.needsUpdate = true; m.scale.set(l.h * t.image.width / t.image.height, l.h, 1); });
+    m.scale.set(l.h * 0.4, l.h, 1);
+    m.userData = l;
+    inside.add(m);
+    return m;
+  });
+
+  // 凸出來的紅色按鈕（在名片前面）
+  const button = new THREE.Mesh(new THREE.PlaneGeometry(1, 1), new THREE.MeshBasicMaterial({ transparent: true, alphaTest: 0.05, depthTest: false }));
+  button.renderOrder = 20;
+  loader.load('site/img/red_button.png', t => { t.colorSpace = THREE.SRGBColorSpace; button.material.map = t; button.material.needsUpdate = true; const s = 0.2; button.scale.set(s * t.image.width / t.image.height, s, 1); });
+  group.add(button);
+
+  // 窗框：一圈細細的金色邊（從角落慢慢畫出來）
+  const frameMat = new THREE.MeshBasicMaterial({ color: 0xffd24a, transparent: true, opacity: 0, depthTest: false });
+  const t2 = 0.012, frame = new THREE.Group();
+  [[0, H / 2, W + t2, t2], [0, -H / 2, W + t2, t2], [W / 2, 0, t2, H], [-W / 2, 0, t2, H]].forEach(([x, y, w, h]) => {
+    const bar = new THREE.Mesh(new THREE.PlaneGeometry(w, h), frameMat); bar.position.set(x, y, 0.003); bar.renderOrder = 19; frame.add(bar);
+  });
+  group.add(frame);
+
+  group.visible = false;
+  return { group, inside, people, button, frameMat, occluder, W, H };
+}
+
 // ---------------- 動畫狀態：出場、切換 ----------------
 const holo = buildHologram();
+const portal = buildPortal();
+holo.root.add(portal.group);
+let mode = 'holo';             // 'holo'＝全息投影的角色；'portal'＝窗戶傳送門
+let portalLevel = 0, portalTarget = 0;
 let current = 0;
 let phase = 'idle';            // idle → intro（底座、光柱、角色出現）→ shown；切換：out → in
 let phaseStart = 0;
@@ -176,15 +250,56 @@ let baseLevel = 0;             // 底座／光柱的亮度 0~1
 let glitchUntil = 0;
 
 function now() { return performance.now() / 1000; }
-function playIntro(index = current) { next = index; current = index; phase = 'intro'; phaseStart = now(); showOnly(current); setActiveChip(current); }
+function playIntro(index = current) {
+  if (mode === 'portal') { openPortal(); return; }
+  next = index; current = index; phase = 'intro'; phaseStart = now(); showOnly(current); setActiveChip(current);
+}
+function openPortal() {
+  mode = 'portal'; portalTarget = 1; portalLevel = Math.min(portalLevel, 0.02); setActiveChip('portal');
+  if (window.__setCardVisible) window.__setCardVisible(false);
+}
+function closePortal() {
+  portalTarget = 0;
+  if (window.__setCardVisible) window.__setCardVisible(true);
+}
 function switchTo(index) {
+  if (mode === 'portal') { closePortal(); mode = 'holo'; current = index; phase = 'intro'; phaseStart = now(); next = index; showOnly(index); setActiveChip(index); return; }
   if (phase === 'idle') { playIntro(index); return; }
   if (index === current && phase === 'shown') { phase = 'in'; phaseStart = now(); return; }   // 同一個：重新投影一次
   next = index; phase = 'out'; phaseStart = now(); setActiveChip(index);
 }
 function showOnly(i) { holo.chars.forEach((c, k) => { c.mesh.visible = k === i; c.info.visible = k === i; }); }
 
+function updatePortal(t, dt) {
+  // 打開／關上：盒子從很深的地方推上來、窗框亮起來（有緩動）
+  portalLevel += (portalTarget - portalLevel) * Math.min(1, dt * 3.2);
+  if (portalTarget === 0 && portalLevel < 0.01) { portal.group.visible = false; return; }
+  portal.group.visible = true;
+  const k = easeInOut(clamp01(portalLevel));
+  portal.inside.position.z = -0.6 * (1 - k);
+  portal.frameMat.opacity = k;
+  portal.people.forEach((p, i) => {
+    const l = p.userData;
+    const rise = easeOut(clamp01((portalLevel - 0.25 - i * 0.12) / 0.5));
+    p.position.set(l.x, -portal.H / 2 - 0.02 + 0.03 * (1 - rise) * -1, l.z);
+    p.position.y = -portal.H / 2 - 0.35 * (1 - rise) + 0.006 * Math.sin(t * 1.3 + i);
+  });
+  const pop = easeOut(clamp01((portalLevel - 0.6) / 0.4));
+  portal.button.position.set(portal.W / 2 - 0.08, -portal.H / 2 + 0.05, 0.02 + 0.06 * pop + 0.008 * Math.sin(t * 2.2));
+  portal.button.material.opacity = pop;
+  portal.button.material.transparent = true;
+}
+
 function update(t, dt, cameraInCard, cameraUpInCard) {
+  updatePortal(t, dt);
+  if (mode === 'portal') {
+    // 窗戶模式：全息投影全部收起來
+    baseLevel += (0 - baseLevel) * Math.min(1, dt * 6);
+    holo.chars.forEach(c => { c.mesh.visible = false; c.info.visible = false; });
+    holo.disc.material.opacity = 0; holo.ring1.material.opacity = 0; holo.ring2.material.opacity = 0;
+    holo.beam.material.uniforms.strength.value = 0; holo.pMat.opacity = 0; holo.scanRing.material.opacity = 0;
+    return;
+  }
   const c = holo.chars[current];
   const p = t - phaseStart;
   let reveal = c.mat.uniforms.reveal.value;
@@ -290,10 +405,17 @@ function buildBar() {
     const l = document.createElement('label'); l.textContent = ch.name;
     chip.append(b, l); bar.appendChild(chip);
   });
+  // 第四顆：窗戶傳送門
+  const pc = document.createElement('div'); pc.className = 'chip portal-chip'; pc.dataset.index = 'portal';
+  const pb = document.createElement('button'); pb.setAttribute('aria-label', '窗戶');
+  pb.style.backgroundImage = 'url(site/img/office.jpg)'; pb.style.backgroundSize = 'cover'; pb.style.backgroundPosition = '50% 50%';
+  pb.onclick = () => openPortal();
+  const pl = document.createElement('label'); pl.textContent = '窗戶';
+  pc.append(pb, pl); bar.appendChild(pc);
   bar.classList.remove('hidden');
 }
 function setActiveChip(i) {
-  bar.querySelectorAll('.chip').forEach(c => c.classList.toggle('active', Number(c.dataset.index) === i));
+  bar.querySelectorAll('.chip').forEach(c => c.classList.toggle('active', String(c.dataset.index) === String(i)));
 }
 
 // ---------------- 預覽模式（不用相機） ----------------
@@ -312,6 +434,7 @@ async function startPreview() {
   camera.up.set(0, 0, 1);
   camera.position.set(0.2, -2.25, 1.45);
   if (params.has('top')) camera.position.set(0.05, -0.05, 2.6);       // 測試：從正上方看（像掃電腦螢幕上的名片）
+  if (params.has('front')) camera.position.set(0.35, -0.9, 1.7);
   const controls = new OrbitControls(camera, renderer.domElement);
   controls.target.set(0, 0, 0.45); controls.enableDamping = true; controls.update();
 
@@ -319,13 +442,24 @@ async function startPreview() {
   const cardTex = new THREE.TextureLoader().load('assets/card_front.jpg'); cardTex.colorSpace = THREE.SRGBColorSpace;
   const card = new THREE.Mesh(new THREE.PlaneGeometry(1, CARD_ASPECT), new THREE.MeshBasicMaterial({ map: cardTex }));
   scene.add(card);
+  // 預覽時：窗戶模式下名片換成「中間挖洞」的版本（真的 AR 裡，名片是相機拍到的實體）
+  const cs = new THREE.Shape();
+  cs.moveTo(-0.5, -CARD_ASPECT / 2); cs.lineTo(0.5, -CARD_ASPECT / 2); cs.lineTo(0.5, CARD_ASPECT / 2); cs.lineTo(-0.5, CARD_ASPECT / 2); cs.lineTo(-0.5, -CARD_ASPECT / 2);
+  const ch = new THREE.Path(), W = portal.W, H = portal.H;
+  ch.moveTo(-W / 2, -H / 2); ch.lineTo(W / 2, -H / 2); ch.lineTo(W / 2, H / 2); ch.lineTo(-W / 2, H / 2); ch.lineTo(-W / 2, -H / 2);
+  cs.holes.push(ch);
+  const cardFrame = new THREE.Mesh(new THREE.ShapeGeometry(cs), new THREE.MeshBasicMaterial({ color: 0xece6d6 }));
+  cardFrame.position.z = 0.0005; cardFrame.visible = false;
+  scene.add(cardFrame);
+
   const table = new THREE.Mesh(new THREE.PlaneGeometry(8, 8), new THREE.MeshBasicMaterial({ color: 0x14102e }));
   table.position.z = -0.01; scene.add(table);
+  window.__setCardVisible = v => { card.visible = v; cardFrame.visible = !v; table.visible = v; };   // 預覽的桌面會擋住凹進去的盒子
   scene.add(holo.root);
 
   addEventListener('resize', () => { renderer.setSize(innerWidth, innerHeight); camera.aspect = innerWidth / innerHeight; camera.updateProjectionMatrix(); });
   buildBar();
-  playIntro(0);
+  if (params.has('portal')) openPortal(); else playIntro(0);
   let last = now();
   renderer.setAnimationLoop(() => {
     const t = now(), dt = Math.min(0.05, t - last); last = t;
