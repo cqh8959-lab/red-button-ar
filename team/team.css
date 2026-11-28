@@ -16,21 +16,3 @@
   transition: opacity .3s cubic-bezier(.2, .8, .2, 1), transform .3s cubic-bezier(.2, .8, .2, 1);
 }
 #toast.show { opacity: 1; transform: translate(-50%, 0); }
-
-/* 回到正面：右下角，平常藏著，需要時從下面浮上來 */
-#home {
-  position: fixed; z-index: 22;
-  right: max(16px, env(safe-area-inset-right));
-  bottom: max(64px, calc(env(safe-area-inset-bottom) + 56px));
-  display: flex; align-items: center; gap: 8px;
-  padding: 10px 16px 10px 12px; border-radius: 999px;
-  border: 1.5px solid rgba(255, 255, 255, .7);
-  background: rgba(11, 8, 32, .78); color: #fff;
-  font: inherit; font-size: 15px; font-weight: 700; cursor: pointer;
-  opacity: 0; transform: translateY(16px) scale(.92); pointer-events: none;
-  transition: opacity .35s cubic-bezier(.2, .8, .2, 1), transform .35s cubic-bezier(.2, .9, .3, 1.25);
-}
-#home svg { width: 22px; height: 22px; }
-#home.show { opacity: 1; transform: none; pointer-events: auto; }
-#home:active { transform: scale(.94); }
-@media (prefers-reduced-motion: reduce) { #home, #toast { transition: none; } }

@@ -268,6 +268,29 @@ function switchTo(index) {
   if (index === current && phase === 'shown') { phase = 'in'; phaseStart = now(); return; }   // 同一個：重新投影一次
   next = index; phase = 'out'; phaseStart = now(); setActiveChip(index);
 }
+// ---------------- 「回到正面」按鈕（像地圖的「回到目前位置」） ----------------
+//   轉了視角或打開了窗戶之後，右下角浮出這顆按鈕；按下去：鏡頭慢慢轉回正面、窗戶關上、角色重新投影
+const homeBtn = document.getElementById('home');
+let previewCam = null, recenter = null, homePos = null, homeTarget = null;
+function drifted() {
+  if (mode === 'portal') return true;
+  if (previewCam) return previewCam.camera.position.distanceTo(homePos) > 0.25 || previewCam.controls.target.distanceTo(homeTarget) > 0.1;
+  return false;
+}
+function checkDrift() { if (homeBtn) homeBtn.classList.toggle('show', !recenter && drifted()); }
+function goHome() {
+  switchTo(current);                                                   // 窗戶開著就關上；角色重新投影一次
+  if (previewCam) recenter = { start: now(), pos: previewCam.camera.position.clone(), target: previewCam.controls.target.clone() };
+}
+function stepRecenter(t) {
+  if (!recenter || !previewCam) return;
+  const k = clamp01((t - recenter.start) / 0.7), e = easeInOut(k);
+  previewCam.camera.position.lerpVectors(recenter.pos, homePos, e);
+  previewCam.controls.target.lerpVectors(recenter.target, homeTarget, e);
+  if (k >= 1) recenter = null;
+}
+if (homeBtn) homeBtn.onclick = goHome;
+
 function showOnly(i) { holo.chars.forEach((c, k) => { c.mesh.visible = k === i; c.info.visible = k === i; }); }
 
 function updatePortal(t, dt) {
@@ -437,6 +460,8 @@ async function startPreview() {
   if (params.has('front')) camera.position.set(0.35, -0.9, 1.7);
   const controls = new OrbitControls(camera, renderer.domElement);
   controls.target.set(0, 0, 0.45); controls.enableDamping = true; controls.update();
+  homePos = camera.position.clone(); homeTarget = controls.target.clone();
+  previewCam = { camera, controls };
 
   // 桌面上的名片
   const cardTex = new THREE.TextureLoader().load('assets/card_front.jpg'); cardTex.colorSpace = THREE.SRGBColorSpace;
@@ -463,9 +488,11 @@ async function startPreview() {
   let last = now();
   renderer.setAnimationLoop(() => {
     const t = now(), dt = Math.min(0.05, t - last); last = t;
+    stepRecenter(t);
     controls.update();
     const [camLocal, camUp] = cameraInfo(camera);
     update(t, dt, camLocal, camUp);
+    checkDrift();
     renderer.render(scene, camera);
   });
 }
@@ -505,6 +532,7 @@ async function startAR() {
       const t = now(), dt = Math.min(0.05, t - last); last = t;
       const [camLocal, camUp] = cameraInfo(camera);
       update(t, dt, camLocal, camUp);
+      checkDrift();
       renderer.render(scene, camera);
     });
   } catch (e) {
