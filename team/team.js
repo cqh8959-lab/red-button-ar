@@ -97,97 +97,119 @@ function wrapLines(g, text, maxW, maxLines) {
 }
 
 // ---------------- 每一片的內容 ----------------
+//   版面（由上到下）：頭像＋名字 → 分隔線 → 關於我 → 擅長 → 特質（三張卡）→ 兩顆按鈕
+//   只有最外面那片玻璃有邊框，裡面靠留白和小標題分區，看起來比較乾淨、有質感
+const PLATE_W = 1.0, PLATE_H = 1.36;
+const PAD = 0.07;                                 // 左右留白
+const INNER = PLATE_W - PAD * 2;
+
+function label(g, text, x, y, color = 'rgba(255,255,255,0.5)') {
+  g.save();
+  g.font = `700 22px ${FONT}`; g.fillStyle = color; g.textBaseline = 'top';
+  if ('letterSpacing' in g) g.letterSpacing = '4px';
+  g.fillText(text, x, y);
+  g.restore();
+}
+
 function drawBack(p) {
-  const [c, g] = canvasFor(1.0, 1.12);
-  glass(g, c.width, c.height, 36, 'rgba(20,24,60,0.38)', 'rgba(255,255,255,0.35)');
-  g.fillStyle = p.accent; g.fillRect(36, c.height - 26, c.width - 72, 6);        // 底部一條成員代表色
+  const [c, g] = canvasFor(PLATE_W, PLATE_H);
+  glass(g, c.width, c.height, 40, 'rgba(18,20,48,0.42)', 'rgba(255,255,255,0.32)');
+  // 上緣一道很淡的成員代表色光（不是發光邊框，是玻璃裡透出來的顏色）
+  const top = g.createLinearGradient(0, 0, 0, c.height * 0.35);
+  top.addColorStop(0, p.accent + '33'); top.addColorStop(1, p.accent + '00');
+  g.beginPath(); g.roundRect(3, 3, c.width - 6, c.height * 0.35, 40); g.fillStyle = top; g.fill();
+  // 頭像區下面的細分隔線
+  g.fillStyle = 'rgba(255,255,255,0.18)'; g.fillRect(PAD * PX, c.height - 0.98 * PX, INNER * PX, 2);
   return c;
 }
 
 function drawAvatar(p, img) {
-  const [c, g] = canvasFor(0.34, 0.34);
-  const s = c.width, r = s / 2 - 10;
+  const [c, g] = canvasFor(0.3, 0.3);
+  const s = c.width, r = s / 2 - 8;
   g.save(); g.beginPath(); g.arc(s / 2, s / 2, r, 0, Math.PI * 2); g.closePath();
-  g.fillStyle = 'rgba(255,255,255,0.10)'; g.fill();
+  g.fillStyle = 'rgba(255,255,255,0.08)'; g.fill();
   if (img) {
-    // 頭像圖：等比例放大到填滿圓形（不變形，多的裁掉）
-    g.clip();
+    g.clip();                                              // 頭像：等比例放大填滿圓形（不變形，多的裁掉）
     const k = Math.max((r * 2) / img.width, (r * 2) / img.height);
     const w = img.width * k, h = img.height * k;
     g.drawImage(img, s / 2 - w / 2, s / 2 - h / 2, w, h);
   }
   g.restore();
   g.beginPath(); g.arc(s / 2, s / 2, r, 0, Math.PI * 2);
-  g.lineWidth = 6; g.strokeStyle = p.accent;
-  if (!img) g.setLineDash([14, 10]);
+  g.lineWidth = 5; g.strokeStyle = p.accent;
+  if (!img) g.setLineDash([12, 9]);
   g.stroke(); g.setLineDash([]);
   if (!img) {
-    g.fillStyle = 'rgba(255,255,255,0.85)'; g.textAlign = 'center'; g.textBaseline = 'middle';
-    g.font = `800 40px ${FONT}`; g.fillText('頭像', s / 2, s / 2 - 14);
-    g.fillStyle = 'rgba(255,255,255,0.55)'; g.font = `500 22px ${FONT}`; g.fillText('之後放圖', s / 2, s / 2 + 26);
+    g.fillStyle = 'rgba(255,255,255,0.8)'; g.textAlign = 'center'; g.textBaseline = 'middle';
+    g.font = `700 30px ${FONT}`; g.fillText('頭像', s / 2, s / 2);
   }
   return c;
 }
 
 function drawName(p) {
-  const [c, g] = canvasFor(0.56, 0.26);
-  g.textBaseline = 'top';
-  g.fillStyle = '#ffffff'; g.font = `900 64px ${FONT}`; g.fillText(p.name, 8, 22);
-  g.fillStyle = p.accent; g.fillRect(10, 104, 56, 6);
-  g.fillStyle = '#ffd24a'; g.font = `700 30px ${FONT}`;
-  wrapLines(g, p.role, c.width - 16, 1).forEach((l, i) => g.fillText(l, 8, 124 + i * 36));
+  const [c, g] = canvasFor(0.56, 0.3);
+  g.textBaseline = 'alphabetic';
+  g.fillStyle = '#ffffff'; g.font = `900 66px ${FONT}`; g.fillText(p.name, 4, 104);
+  g.fillStyle = p.accent; g.fillRect(6, 128, 44, 5);
+  g.fillStyle = 'rgba(255,255,255,0.75)'; g.font = `500 27px ${FONT}`;
+  wrapLines(g, p.role, c.width - 10, 1).forEach(l => g.fillText(l, 4, 178));
   return c;
 }
 
 function drawIntro(p) {
-  const [c, g] = canvasFor(0.92, 0.15);
-  glass(g, c.width, c.height, 22);
-  g.fillStyle = '#eef6ff'; g.font = `500 30px ${FONT}`; g.textBaseline = 'middle';
-  const lines = wrapLines(g, p.intro, c.width - 56, 2);
-  const lh = 38, top = c.height / 2 - (lines.length - 1) * lh / 2;
-  lines.forEach((l, i) => g.fillText(l, 28, top + i * lh));
+  const [c, g] = canvasFor(INNER, 0.2);
+  label(g, '關於我', 0, 0);
+  g.fillStyle = '#f1f6ff'; g.font = `400 31px ${FONT}`; g.textBaseline = 'top';
+  wrapLines(g, p.intro, c.width, 2).forEach((l, i) => g.fillText(l, 0, 40 + i * 42));
   return c;
 }
 
 function drawSkills(p) {
-  const [c, g] = canvasFor(0.92, 0.12);
-  g.font = `700 26px ${FONT}`; g.textBaseline = 'middle';
-  g.fillStyle = 'rgba(255,255,255,0.6)'; g.fillText('擅長', 6, c.height / 2);
-  let x = 82;
+  const [c, g] = canvasFor(INNER, 0.15);
+  label(g, '擅長', 0, 0);
+  g.font = `500 26px ${FONT}`; g.textBaseline = 'middle';
+  let x = 0; const y = 40, h = 46;
   for (const s of p.skills) {
-    const w = g.measureText(s).width + 36;
-    if (x + w > c.width - 4) break;                       // 放不下就不畫，不會疊到外面
-    g.beginPath(); g.roundRect(x, c.height / 2 - 24, w, 48, 24);
-    g.fillStyle = 'rgba(255,255,255,0.14)'; g.fill();
-    g.lineWidth = 2; g.strokeStyle = 'rgba(255,255,255,0.5)'; g.stroke();
-    g.fillStyle = '#ffffff'; g.fillText(s, x + 18, c.height / 2 + 1);
-    x += w + 12;
+    const w = g.measureText(s).width + 34;
+    if (x + w > c.width) break;                             // 放不下就不畫，不會超出去
+    g.beginPath(); g.roundRect(x, y, w, h, h / 2);
+    g.fillStyle = 'rgba(255,255,255,0.10)'; g.fill();
+    g.fillStyle = '#ffffff'; g.fillText(s, x + 17, y + h / 2 + 1);
+    x += w + 10;
   }
   return c;
 }
 
+function drawSectionLabel(text) {
+  const [c, g] = canvasFor(INNER, 0.06);
+  label(g, text, 0, 6);
+  return c;
+}
+
 function drawTrait(p, t, back) {
-  const [c, g] = canvasFor(0.28, 0.2);
-  glass(g, c.width, c.height, 22, back ? 'rgba(255,255,255,0.20)' : 'rgba(255,255,255,0.10)', back ? p.accent : 'rgba(255,255,255,0.55)');
+  const [c, g] = canvasFor(0.27, 0.2);
+  glass(g, c.width, c.height, 20, back ? 'rgba(255,255,255,0.16)' : 'rgba(255,255,255,0.07)', back ? p.accent : 'rgba(255,255,255,0.28)');
   g.textAlign = 'center'; g.textBaseline = 'middle';
   if (!back) {
-    g.fillStyle = '#ffffff'; g.font = `900 38px ${FONT}`; g.fillText(t.word, c.width / 2, c.height / 2 - 10);
-    g.fillStyle = 'rgba(255,255,255,0.5)'; g.font = `500 18px ${FONT}`; g.fillText('點我翻面', c.width / 2, c.height - 22);
+    g.fillStyle = '#ffffff'; g.font = `800 34px ${FONT}`; g.fillText(t.word, c.width / 2, c.height / 2 - 6);
+    // 右下角一個小小的翻頁角（程式畫的三角形）
+    g.beginPath(); g.moveTo(c.width - 14, c.height - 38); g.lineTo(c.width - 14, c.height - 14); g.lineTo(c.width - 38, c.height - 14); g.closePath();
+    g.fillStyle = p.accent; g.fill();
   } else {
-    g.fillStyle = '#ffffff'; g.font = `500 21px ${FONT}`;
-    const lines = wrapLines(g, t.example, c.width - 32, 3);
+    g.fillStyle = '#ffffff'; g.font = `400 20px ${FONT}`;
+    const lines = wrapLines(g, t.example, c.width - 34, 3);
     const lh = 28, top = c.height / 2 - (lines.length - 1) * lh / 2;
     lines.forEach((l, i) => g.fillText(l, c.width / 2, top + i * lh));
   }
   return c;
 }
 
-function drawButton(label, color) {
-  const [c, g] = canvasFor(0.43, 0.12);
-  g.beginPath(); g.roundRect(4, 4, c.width - 8, c.height - 8, (c.height - 8) / 2);
-  g.fillStyle = color; g.fill();
-  g.lineWidth = 3; g.strokeStyle = 'rgba(255,255,255,0.75)'; g.stroke();
-  g.fillStyle = '#ffffff'; g.font = `800 32px ${FONT}`; g.textAlign = 'center'; g.textBaseline = 'middle';
+function drawButton(label, fill, solid) {
+  const [c, g] = canvasFor(0.41, 0.11);
+  g.beginPath(); g.roundRect(3, 3, c.width - 6, c.height - 6, (c.height - 6) / 2);
+  g.fillStyle = fill; g.fill();
+  if (!solid) { g.lineWidth = 2; g.strokeStyle = 'rgba(255,255,255,0.6)'; g.stroke(); }
+  g.fillStyle = '#ffffff'; g.font = `700 28px ${FONT}`; g.textAlign = 'center'; g.textBaseline = 'middle';
   g.fillText(label, c.width / 2, c.height / 2 + 1);
   return c;
 }
@@ -203,7 +225,7 @@ root.add(stand);
 const glow = (() => {
   const [c, g] = canvasFor(1, 1);
   const grd = g.createRadialGradient(c.width / 2, c.height / 2, 0, c.width / 2, c.height / 2, c.width / 2);
-  grd.addColorStop(0, 'rgba(160,230,255,0.55)'); grd.addColorStop(1, 'rgba(160,230,255,0)');
+  grd.addColorStop(0, 'rgba(160,230,255,0.5)'); grd.addColorStop(1, 'rgba(160,230,255,0)');
   g.fillStyle = grd; g.fillRect(0, 0, c.width, c.height);
   const m = new THREE.Mesh(new THREE.PlaneGeometry(1.1, 0.5), new THREE.MeshBasicMaterial({ map: toTexture(c), transparent: true, depthWrite: false, opacity: 0 }));
   m.position.set(0, -CARD_ASPECT * 0.28, 0.003);
@@ -213,6 +235,7 @@ const glow = (() => {
 
 let items = [];         // 每一片：{ mesh, delay, x, y, z, ... }
 let tappables = [];
+let traits = [];
 let shownAt = 0, hiding = null;
 
 function addPiece(canvas, w, h, x, y, z, delay, order) {
@@ -226,8 +249,12 @@ function addPiece(canvas, w, h, x, y, z, delay, order) {
 }
 
 function clearPieces() {
-  for (const it of items) { stand.remove(it.mesh); it.mesh.material.map.dispose(); it.mesh.material.dispose(); it.mesh.geometry.dispose(); }
-  items = []; tappables = [];
+  for (const it of items) {
+    stand.remove(it.mesh); it.mesh.material.map.dispose(); it.mesh.material.dispose(); it.mesh.geometry.dispose();
+    if (it.back) it.back.dispose();
+    if (it.front && it.front !== it.mesh.material.map) it.front.dispose();
+  }
+  items = []; tappables = []; traits = [];
 }
 
 const photoCache = {};
@@ -242,21 +269,24 @@ async function build(index) {
   const p = TEAM[index];
   const photo = await loadPhoto(p.photo);
   clearPieces();
-  addPiece(drawBack(p), 1.0, 1.12, 0, 0.6, 0, 0, 1);
-  addPiece(drawAvatar(p, photo), 0.34, 0.34, -0.29, 0.98, 0.05, 0.10, 3);
-  addPiece(drawName(p), 0.56, 0.26, 0.19, 0.98, 0.035, 0.16, 3);
-  addPiece(drawIntro(p), 0.92, 0.15, 0, 0.75, 0.03, 0.24, 2);
-  addPiece(drawSkills(p), 0.92, 0.12, 0, 0.6, 0.03, 0.30, 2);
+  const left = -PLATE_W / 2 + PAD;                                      // 內容的左邊界
+  addPiece(drawBack(p), PLATE_W, PLATE_H, 0, PLATE_H / 2, 0, 0, 1);
+  addPiece(drawAvatar(p, photo), 0.3, 0.3, left + 0.15, 1.17, 0.05, 0.10, 3);
+  addPiece(drawName(p), 0.56, 0.3, left + 0.3 + 0.05 + 0.28, 1.17, 0.035, 0.16, 3);
+  addPiece(drawIntro(p), INNER, 0.2, 0, 0.84, 0.03, 0.24, 2);
+  addPiece(drawSkills(p), INNER, 0.15, 0, 0.635, 0.03, 0.30, 2);
+  addPiece(drawSectionLabel('特質（點一下翻面）'), INNER, 0.06, 0, 0.505, 0.03, 0.34, 2);
   p.traits.slice(0, 3).forEach((t, i) => {
-    const it = addPiece(drawTrait(p, t, false), 0.28, 0.2, -0.31 + i * 0.31, 0.4, 0.06, 0.38 + i * 0.06, 4);
+    const it = addPiece(drawTrait(p, t, false), 0.27, 0.2, left + 0.135 + i * (0.27 + 0.0) + i * ((INNER - 0.81) / 2), 0.36, 0.06, 0.38 + i * 0.06, 4);
     it.front = it.mesh.material.map; it.back = toTexture(drawTrait(p, t, true));
     it.flip = 0; it.flipTo = 0;
     it.onTap = () => { it.flipTo = it.flipTo ? 0 : 1; };
-    tappables.push(it);
+    tappables.push(it); traits.push(it);
   });
-  const work = addPiece(drawButton('代表作', p.accent), 0.43, 0.12, -0.235, 0.17, 0.05, 0.58, 4);
+  const bw = 0.41, gap = INNER - bw * 2;
+  const work = addPiece(drawButton('代表作', p.accent, true), bw, 0.11, left + bw / 2, 0.13, 0.05, 0.58, 4);
   work.onTap = () => setTimeout(() => { location.href = WORK_LINK; }, 220);
-  const chat = addPiece(drawButton('加入群聊', 'rgba(255,255,255,0.18)'), 0.43, 0.12, 0.235, 0.17, 0.05, 0.64, 4);
+  const chat = addPiece(drawButton('加入群聊', 'rgba(255,255,255,0.08)', false), bw, 0.11, left + bw + gap + bw / 2, 0.13, 0.05, 0.64, 4);
   chat.onTap = () => {
     if (p.group) setTimeout(() => { location.href = p.group; }, 220);
     else toast('群聊連結還沒填（在 team.js 的 group 填上）');
@@ -326,15 +356,26 @@ function buildBar() {
   bar.innerHTML = '';
   TEAM.forEach((p, i) => {
     const chip = document.createElement('div'); chip.className = 'chip'; chip.dataset.index = i;
-    const b = document.createElement('button'); b.className = 'member'; b.textContent = String(i + 1);
+    const b = document.createElement('button'); b.className = 'member';
     b.setAttribute('aria-label', p.name);
+    b.style.setProperty('--accent', p.accent);
     if (p.photo) { b.classList.add('has-photo'); b.style.backgroundImage = `url(${p.photo})`; }
+    else b.innerHTML = portraitSVG(p.accent);                       // 還沒放頭像：先畫一個簡單的人像
     b.onclick = () => switchTo(i);
     const l = document.createElement('label'); l.textContent = p.name;
     chip.append(b, l); bar.appendChild(chip);
   });
   bar.classList.remove('hidden');
   setActiveChip(current);
+}
+// 頭像預設圖：成員代表色的底＋白色的頭和肩膀（用程式畫，不用文字符號）
+function portraitSVG(accent) {
+  return `<svg viewBox="0 0 60 60" aria-hidden="true">
+    <defs><linearGradient id="g${accent.slice(1)}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${accent}" stop-opacity=".95"/><stop offset="1" stop-color="${accent}" stop-opacity=".55"/></linearGradient></defs>
+    <circle cx="30" cy="30" r="30" fill="url(#g${accent.slice(1)})"/>
+    <circle cx="30" cy="24" r="10" fill="rgba(255,255,255,.92)"/>
+    <path d="M12 54c2-11 9-16 18-16s16 5 18 16a30 30 0 0 1-36 0z" fill="rgba(255,255,255,.92)"/>
+  </svg>`;
 }
 function setActiveChip(i) { bar.querySelectorAll('.chip').forEach(c => c.classList.toggle('active', Number(c.dataset.index) === i)); }
 
@@ -351,6 +392,38 @@ function toast(text) {
 document.getElementById('who').innerHTML = `${TEAM[current].name} 的名片<br>把手機鏡頭對準名片正面，名片上會浮出介紹。`;
 document.getElementById('btnPreview').href = `?preview&p=${current + 1}`;
 
+// ---------------- 「回到正面」按鈕（像地圖的「回到目前位置」） ----------------
+//   轉了視角、翻了特質卡、不知道怎麼回到一開始的樣子時，右下角會浮出這顆按鈕
+//   按下去：鏡頭慢慢轉回正面、翻過的卡片翻回來、介紹重新一片一片浮上來
+const HOME_POS = new THREE.Vector3(0, -2.55, 1.6);
+const HOME_TARGET = new THREE.Vector3(0, 0, 0.62);
+let previewCam = null, recenter = null;
+const homeBtn = document.getElementById('home');
+
+function drifted() {
+  if (traits.some(t => t.flipTo)) return true;
+  if (previewCam) {
+    const { camera, controls } = previewCam;
+    return camera.position.distanceTo(HOME_POS) > 0.25 || controls.target.distanceTo(HOME_TARGET) > 0.1;
+  }
+  return false;
+}
+function checkDrift() { homeBtn.classList.toggle('show', !recenter && !hiding && items.length > 0 && drifted()); }
+
+function goHome() {
+  traits.forEach(t => { t.flipTo = 0; });
+  if (previewCam) recenter = { start: now(), pos: previewCam.camera.position.clone(), target: previewCam.controls.target.clone() };
+  shownAt = now();                                                   // 介紹重新浮上來一次
+}
+function stepRecenter(t) {
+  if (!recenter || !previewCam) return;
+  const k = clamp01((t - recenter.start) / 0.7), e = easeInOut(k);
+  previewCam.camera.position.lerpVectors(recenter.pos, HOME_POS, e);
+  previewCam.controls.target.lerpVectors(recenter.target, HOME_TARGET, e);
+  if (k >= 1) recenter = null;
+}
+homeBtn.onclick = goHome;
+
 // ---------------- 預覽模式（不用相機） ----------------
 async function startPreview() {
   const { OrbitControls } = await import('three/addons/controls/OrbitControls.js');
@@ -364,9 +437,10 @@ async function startPreview() {
   scene.background = new THREE.Color(0x0b0820);
   const camera = new THREE.PerspectiveCamera(50, innerWidth / innerHeight, 0.01, 50);
   camera.up.set(0, 0, 1);
-  camera.position.set(0, -2.5, 1.45);        // 手機直拿也看得到整片
+  camera.position.copy(HOME_POS);              // 手機直拿也看得到整片
   const controls = new OrbitControls(camera, renderer.domElement);
-  controls.target.set(0, 0, 0.5); controls.enableDamping = true; controls.update();
+  controls.target.copy(HOME_TARGET); controls.enableDamping = true; controls.update();
+  previewCam = { camera, controls };
 
   const cardTex = new THREE.TextureLoader().load('../assets/card_front.jpg'); cardTex.colorSpace = THREE.SRGBColorSpace;
   scene.add(new THREE.Mesh(new THREE.PlaneGeometry(1, CARD_ASPECT), new THREE.MeshBasicMaterial({ map: cardTex })));
@@ -378,7 +452,7 @@ async function startPreview() {
   buildBar();
   bindTap(renderer, camera);
   build(current);
-  renderer.setAnimationLoop(() => { controls.update(); update(now()); renderer.render(scene, camera); });
+  renderer.setAnimationLoop(() => { const t = now(); stepRecenter(t); controls.update(); update(t); checkDrift(); renderer.render(scene, camera); });
 }
 
 // ---------------- AR 模式（相機＋辨識名片） ----------------
@@ -409,7 +483,7 @@ async function startAR() {
     scan.classList.remove('hidden');
     buildBar();
     bindTap(renderer, camera);
-    renderer.setAnimationLoop(() => { update(now()); renderer.render(scene, camera); });
+    renderer.setAnimationLoop(() => { update(now()); checkDrift(); renderer.render(scene, camera); });
   } catch (e) {
     console.error(e);
     btn.disabled = false; btn.textContent = '開啟相機，掃描名片';

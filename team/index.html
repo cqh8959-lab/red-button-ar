@@ -6,8 +6,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <meta name="theme-color" content="#0b0820">
 <title>團隊 AR 名片</title>
-<link rel="stylesheet" href="../style.css?v=20261128">
-<link rel="stylesheet" href="team.css?v=20261128">
+<link rel="stylesheet" href="../style.css?v=20261129">
+<link rel="stylesheet" href="team.css?v=20261129">
 <script type="importmap">
 { "imports": {
     "three": "../vendor/three/three.module.js",
@@ -43,6 +43,12 @@
   <div id="preview-tip" class="hidden">點特質卡翻面・拖曳轉動</div>
   <div id="toast" class="hidden"></div>
 
-  <script type="module" src="team.js?v=20261128"></script>
+  <!-- 回到正面（轉了視角或翻了卡片之後才出現） -->
+  <button id="home" type="button" aria-label="回到正面">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="7.5" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="2.6" fill="currentColor"/><path d="M12 1.5v4M12 18.5v4M1.5 12h4M18.5 12h4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+    <span>回到正面</span>
+  </button>
+
+  <script type="module" src="team.js?v=20261129"></script>
 </body>
 </html>
